@@ -1,6 +1,7 @@
 const assert = require("assert");
 const { execute, 
-  getNLines } = require("../src/lib.js");
+getNLines,
+getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
 const sub = (num1,num2) => num1-num2;
@@ -36,6 +37,32 @@ describe("getNLines",function() {
     let contents = "";
     let expectedOutput = "";
     assert.equal(getNLines(contents,5),expectedOutput);
+  });
+
+});
+
+describe("getNBytes",function() {
+  let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ"
+
+  it("should return 10 bytes/characters when number of bytes is not specified",function() {
+    let expectedOutput = "AB\nCD\nEF\nG";
+    assert.equal(getNBytes(contents),expectedOutput);
+  });
+
+  it("should return specified number of bytes when number of bytes is given ",function() { 
+    let expectedOutput = "AB\n";
+    assert.equal(getNBytes(contents,3),expectedOutput);
+  });
+
+  it("should return empty string when number of bytes is 0",function() { 
+    let expectedOutput = "";
+    assert.equal(getNBytes(contents,0),expectedOutput);
+  });
+  
+  it("should return empty string when contents is empty string ",function() {
+    let contents = "";
+    let expectedOutput = "";
+    assert.equal(getNBytes(contents,5),expectedOutput);
   });
 
 });
