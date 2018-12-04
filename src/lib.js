@@ -1,5 +1,7 @@
-const execute = function(functionName, args) { 
-  return functionName(args[0],args[1]);
+const execute = function(functionName, files) { 
+  return files.map( function(element) {
+    return functionName(element,"utf8");
+  });
 }
 
 const getNLines = function(content,numOfLines=10) { 
