@@ -1,7 +1,8 @@
 const assert = require("assert");
 const { execute, 
-getNLines,
-getNBytes } = require("../src/lib.js");
+  getNLines,
+  select,
+  getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
 
@@ -62,6 +63,20 @@ describe("getNBytes",function() {
     let contents = "";
     let expectedOutput = "";
     assert.equal(getNBytes(contents,5),expectedOutput);
+  });
+
+});
+
+describe("select",function() {
+
+  it("should return getNLines function when input is -n",function() {
+    assert.equal(select("-n"),getNLines);
+    assert.equal(select("-n5"),getNLines);
+  });
+
+  it("should return getNBytes function when input is rather than -n",function() {
+    assert.equal(select("-c"),getNBytes);
+    assert.equal(select("-d"),getNBytes)
   });
 
 });

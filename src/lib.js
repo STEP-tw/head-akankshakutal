@@ -12,6 +12,11 @@ const getNBytes = function(contents,numOfBytes=10) {
   return contents.slice(0,numOfBytes);
 }
 
+const select = function(option) { 
+  return (/-n/).test(option) ? getNLines : getNBytes;
+}
+
 module.exports = { execute,
-getNLines,
-getNBytes };
+  getNLines,
+  select,
+  getNBytes };
