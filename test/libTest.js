@@ -3,6 +3,7 @@ const { execute,
   getNLines,
   select,
   getCount,
+  getFileNames,
   getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
@@ -96,3 +97,19 @@ describe("getCount",function() {
       assert.equal(getCount(["-c","20"]),20);
   });
 });
+
+describe("getFileNames",function() {
+
+  it("should return array slice by 1 when input contains /-[0-9]/ ",function() {
+    assert.deepEqual(getFileNames(["-n4","File1","File2"]),["File1","File2"]);
+  });
+
+  it("should return array slice by 2 when input does not contains any number",function() { 
+      assert.deepEqual(getFileNames(["-n","10","File1","File2"]),["File1","File2"]);
+  });
+
+  it("should return given array when input doesn't contains - and any number",function() { 
+      assert.deepEqual(getFileNames(["Hello","Hiiii","Welcome"]),["Hello","Hiiii","Welcome"]);
+  });
+});
+

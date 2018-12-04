@@ -27,8 +27,20 @@ const getCount = function(userInputs) {
   return +userInputs[1].match(/[0-9]/g).join(""); 
 }
 
+const getFileNames = function(userInputs) { 
+  if( userInputs[0].match(/^-/) && userInputs[0].match(/[0-9]/) ) {
+    return userInputs.slice(1);
+  }
+  if( userInputs[0].match(/^-/) && ! userInputs[0].match(/[0-9]/) ) {
+    return userInputs.slice(2);
+  }
+  return userInputs;
+}
+
 module.exports = { execute,
   getNLines,
   select,
   getCount,
+  getFileNames,
   getNBytes };
+
