@@ -2,6 +2,7 @@ const assert = require("assert");
 const { execute, 
   getNLines,
   select,
+  getCount,
   getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
@@ -79,4 +80,19 @@ describe("select",function() {
     assert.equal(select("-d"),getNBytes)
   });
 
+});
+
+describe("getCount",function() {
+
+  it("should return 10 when -n/-c is not given ",function() {
+    assert.equal(getCount(["-5","File1"]),10);
+  });
+
+  it("should return specified number from that string ",function() { 
+      assert.equal(getCount(["-n20", "file1"]),20);
+  });
+
+  it("should return number that specified in 1 index",function() { 
+      assert.equal(getCount(["-c","20"]),20);
+  });
 });

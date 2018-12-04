@@ -16,7 +16,19 @@ const select = function(option) {
   return (/-n/).test(option) ? getNLines : getNBytes;
 }
 
+const getCount = function(userInputs) { 
+  if( !userInputs[0].match(/[nc]/g) ) {
+    return 10;
+  }
+  let match1 =  userInputs[0].match(/[0-9]/g); 
+  if(match1) {
+    return +match1.join("");
+  }
+  return +userInputs[1].match(/[0-9]/g).join(""); 
+}
+
 module.exports = { execute,
   getNLines,
   select,
+  getCount,
   getNBytes };
