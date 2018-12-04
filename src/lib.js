@@ -13,7 +13,7 @@ const getNBytes = function(contents,numOfBytes=10) {
 }
 
 const select = function(option) { 
-  return (/-n/).test(option) ? getNLines : getNBytes;
+  return ( (/-n/).test(option) ) ? getNLines : getNBytes;
 }
 
 const getCount = function(userInputs) { 
@@ -37,10 +37,18 @@ const getFileNames = function(userInputs) {
   return userInputs;
 }
 
+const extractInput = function(userInputs) { 
+  return { option : select(userInputs[0]),
+    count : getCount(userInputs.slice(0,2)),
+    files : getFileNames(userInputs)
+  }
+}
+
 module.exports = { execute,
   getNLines,
   select,
   getCount,
   getFileNames,
+  extractInput,
   getNBytes };
 

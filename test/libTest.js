@@ -4,6 +4,7 @@ const { execute,
   select,
   getCount,
   getFileNames,
+  extractInput,
   getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
@@ -69,47 +70,58 @@ describe("getNBytes",function() {
 
 });
 
-describe("select",function() {
+describe("extractInput",function() {
 
-  it("should return getNLines function when input is -n",function() {
-    assert.equal(select("-n"),getNLines);
-    assert.equal(select("-n5"),getNLines);
+  describe("select",function() {
+
+    it("should return getNLines function when input is -n",function() {
+      assert.equal(select("-n"),getNLines);
+      assert.equal(select("-n5"),getNLines);
+    });
+
+    it("should return getNBytes function when input is rather than -n",function() {
+      assert.equal(select("-c"),getNBytes);
+      assert.equal(select("-d"),getNBytes)
+    });
+
   });
 
-  it("should return getNBytes function when input is rather than -n",function() {
-    assert.equal(select("-c"),getNBytes);
-    assert.equal(select("-d"),getNBytes)
-  });
+  describe("getCount",function() {
 
-});
+    it("should return 10 when -n/-c is not given ",function() {
+      assert.equal(getCount(["-5","File1"]),10);
+    });
 
-describe("getCount",function() {
-
-  it("should return 10 when -n/-c is not given ",function() {
-    assert.equal(getCount(["-5","File1"]),10);
-  });
-
-  it("should return specified number from that string ",function() { 
+    it("should return specified number from that string ",function() { 
       assert.equal(getCount(["-n20", "file1"]),20);
-  });
+    });
 
-  it("should return number that specified in 1 index",function() { 
+    it("should return number that specified in 1 index",function() { 
       assert.equal(getCount(["-c","20"]),20);
-  });
-});
+    });
 
-describe("getFileNames",function() {
-
-  it("should return array slice by 1 when input contains /-[0-9]/ ",function() {
-    assert.deepEqual(getFileNames(["-n4","File1","File2"]),["File1","File2"]);
   });
 
-  it("should return array slice by 2 when input does not contains any number",function() { 
+  describe("getFileNames",function() {
+
+    it("should return array slice by 1 when input contains /-[0-9]/ ",function() {
+      assert.deepEqual(getFileNames(["-n4","File1","File2"]),["File1","File2"]);
+    });
+
+    it("should return array slice by 2 when input does not contains any number",function() { 
       assert.deepEqual(getFileNames(["-n","10","File1","File2"]),["File1","File2"]);
+    });
+
+    it("should return given array when input doesn't contains - and any number",function() { 
+      assert.deepEqual(getFileNames(["Hello","Hiiii","Welcome"]),["Hello","Hiiii","Welcome"]);
+    });
+
   });
 
-  it("should return given array when input doesn't contains - and any number",function() { 
-      assert.deepEqual(getFileNames(["Hello","Hiiii","Welcome"]),["Hello","Hiiii","Welcome"]);
+  it("should return object that contains three keys", function () {
+    assert.deepEqual(extractInput(["-n","4","File2","File3"]),{ option : getNLines, count : 4 , files : ["File2","File3"] });
+
+    assert.deepEqual(extractInput(["-n4","File1","File2","File3"]),{ option : getNLines, count : 4 , files : ["File1","File2","File3"] });
+
   });
 });
-
