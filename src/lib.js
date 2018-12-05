@@ -55,7 +55,19 @@ const format = function(fileNames,contents) {
   return contents.map((content,index) => addHeading(fileNames[index],content)).join("\n");
 }
 
-module.exports = { execute,
+const head = function(userInputs,reader,validater) { 
+  let parameters = extractInput(userInputs);
+  let contents = execute(reader, parameters.files , "utf8"); 
+  let requiredContents = execute(parameters.option, contents , parameters.count );
+  let result = format(parameters.files, requiredContents);
+  if(parameters.count <= 0 ) {
+    result = "head: illegal line count -- 0";
+  }
+  return result;
+}
+
+module.exports = { head,
+  execute, 
   getNLines,
   select,
   getCount,
@@ -63,5 +75,5 @@ module.exports = { execute,
   extractInput,
   format,
   addHeading,
-  getNBytes };
-
+  getNBytes,
+};

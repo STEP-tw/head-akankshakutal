@@ -7,9 +7,12 @@ const { execute,
   extractInput,
   format,
   addHeading,
+  head,
   getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
+const reader = file => file;
+const validater = (file) => (file == "exit");
 
 describe("execute",function() {
   it("should call function with one argument ",function() {
@@ -141,6 +144,21 @@ describe("format",function() {
   it("should return array elements alternatively when first array lenth is not equal to 1", function() { 
     let expectedOutput = "==> Hello <==\nHow are you ? \n\n==> Hiii <==\nHello....\n\n==> Thank You <==\nWelcome\n"
     assert.equal(format(["Hello","Hiii","Thank You"],["How are you ? ","Hello....","Welcome"]),expectedOutput);
+  });
+
+});
+
+describe("head",function() {
+
+  it('should return error message when input  is -n0/ -0', function() {
+    let expectedOutput = "head: illegal line count -- 0";
+    assert.deepEqual(head(["-n0","File1","File2"], reader, validater),expectedOutput);
+  });
+
+  it('should return the lines when multiple files are provided', function() {
+    let file1 = "Hello How are you ? "; 
+    let expectedOutput = "Hello"
+    assert.deepEqual(head(["-c5",file1],reader,validater),expectedOutput);
   });
 
 });
