@@ -50,8 +50,22 @@ const format = function(fileName,contents) {
   return  addHeading(fileName,contents);
 }
 
+const validateInput  = function(userInputs,parameters) { 
+  if( parameters.count < 1 ) {
+    return (parameters.option == getNBytes ) ? "head: illegal byte count -- "+parameters.count : "head: illegal line count -- " + parameters.count;
+  }
+  if( !userInputs[0].match(/^-[nc]/) && userInputs[0] != parameters.files[0] && !userInputs[0].match(/^-[0-9]/) ) {
+    return "head: illegal option -- "+ userInputs[0].slice(0) +"\nusage: head [-n lines | -c bytes] [file ...]";
+  }
+  return "1";
+}
+
 const head = function(userInputs,reader,validater) { 
   let parameters = extractInput(userInputs);
+  let validInput = validateInput(userInputs,parameters);
+  if( validInput != 1) {
+    return validInput;
+  }
   return parameters.files.map(function (file) {
     if( !validater(file) ) {
       return 'head: '+file+': No such file or directory';

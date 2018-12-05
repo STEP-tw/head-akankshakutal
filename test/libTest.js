@@ -152,7 +152,7 @@ describe("format",function() {
 describe("head",function() {
 
   it('should return error message when input file is not present ', function() {
-    let expectedOutput = 'head: File1: No such file or directory';;
+    let expectedOutput = 'head: illegal line count -- 0';
     assert.deepEqual(head(["-n0","File1"], reader, validater),expectedOutput);
   });
 
