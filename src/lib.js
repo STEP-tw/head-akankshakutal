@@ -17,7 +17,7 @@ const select = function(option) {
 }
 
 const getCount = function(userInputs) { 
-  if( !userInputs[0].match(/[nc]/g) ) {
+  if( !userInputs[0].match(/^-[nc]/g) &&  !userInputs[0].match(/^-[0-9]/g) ) {
     return 10;
   }
   let match1 =  userInputs[0].match(/[0-9]/g); 

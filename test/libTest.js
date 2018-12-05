@@ -91,7 +91,7 @@ describe("extractInput",function() {
   describe("getCount",function() {
 
     it("should return 10 when -n/-c is not given ",function() {
-      assert.equal(getCount(["-5","File1"]),10);
+      assert.equal(getCount(["-d","File1"]),10);
     });
 
     it("should return specified number from that string ",function() { 
