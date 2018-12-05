@@ -11,15 +11,16 @@ const { execute,
   getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
+const sub = (num1,num2) => num1-num2;
 const reader = file => file;
 const validater = (file) => (file == "exit");
 
 describe("execute",function() {
   it("should call function with one argument ",function() {
-    assert.deepEqual(execute(add,[5]),[15]);
+    assert.deepEqual(execute(add,5),15);
   });
   it("should call function with two arguments ",function() { 
-      assert.deepEqual(execute(add,[10,5]),[20,15])
+      assert.deepEqual(execute(sub,10,5),5);
   });
 });
 
@@ -132,38 +133,27 @@ describe("extractInput",function() {
 });
 
 describe("format",function() {
+
   describe("addHeading",function() {
+
     it("should return first arg im between ==> <== and second on next line",function() {
-      assert.equal(addHeading("Hello","How are you ? "),"==> Hello <==\nHow are you ? \n");
+      assert.equal(addHeading("Hello","How are you ? "),"==> Hello <==\nHow are you ? ");
     });
-  });
-  it("should return only contents when first array contains only one element ",function() {
-    assert.equal(format(["Hello"],["How are you ?"]),"How are you ?");
+
   });
 
   it("should return array elements alternatively when first array lenth is not equal to 1", function() { 
-    let expectedOutput = "==> Hello <==\nHow are you ? \n\n==> Hiii <==\nHello....\n\n==> Thank You <==\nWelcome\n"
-    assert.equal(format(["Hello","Hiii","Thank You"],["How are you ? ","Hello....","Welcome"]),expectedOutput);
+    let expectedOutput = "==> Hello <==\nHow are you ?"
+    assert.equal(format("Hello","How are you ?"),expectedOutput);
   });
 
 });
 
 describe("head",function() {
 
-  it('should return error message when input  is -n0/ -0', function() {
-    let expectedOutput = "head: illegal line count -- 0";
-    assert.deepEqual(head(["-n0","File1","File2"], reader, validater),expectedOutput);
-  });
-
-  it('should return the lines when multiple files are provided', function() {
-    let file1 = "Hello How are you ? "; 
-    let expectedOutput = "Hello"
-    assert.deepEqual(head(["-c5",file1],reader,validater),expectedOutput);
-  });
-
-  it('should return error message when input  is other than n/c', function() {
-    let expectedOutput = "head: illegal option -- e\nusage: head [-n lines | -c bytes] [file ...]";
-    assert.deepEqual(head(["-e","File1","File2"], reader, validater),expectedOutput);
+  it('should return error message when input file is not present ', function() {
+    let expectedOutput = 'head: File1: No such file or directory';;
+    assert.deepEqual(head(["-n0","File1"], reader, validater),expectedOutput);
   });
 
 });

@@ -1,7 +1,5 @@
-const execute = function(functionName, files, encoding ) { 
-  return files.map( function(element) {
-    return functionName(element,encoding);
-  });
+const execute = function(functionName, file, encoding ) { 
+    return functionName(file,encoding);
 }
 
 const getNLines = function(content,numOfLines=10) { 
@@ -45,28 +43,27 @@ const extractInput = function(userInputs) {
 }
 
 const addHeading = function(fileName,content) { 
-    return "==> "+ fileName + " <==\n"+ content+"\n";
+    return "==> "+ fileName + " <==\n"+ content;
 }
 
-const format = function(fileNames,contents) { 
-  if( fileNames.length == 1 ) {
-    return contents.join("");
-  }
-  return contents.map((content,index) => addHeading(fileNames[index],content)).join("\n");
+const format = function(fileName,contents) { 
+  return  addHeading(fileName,contents);
 }
 
 const head = function(userInputs,reader,validater) { 
   let parameters = extractInput(userInputs);
-  if(parameters.count < 1 ) {
-    return parameters.option == getNLines ? "head: illegal line count -- 0" : "head: illegal byte count -- 0";
-  }
-  if(!userInputs[0].startsWith("-n") && !userInputs[0].startsWith("-c") && parameters.files[0] != userInputs[0]) {
-   return "head: illegal option -- "+ userInputs[0][1] +"\nusage: head [-n lines | -c bytes] [file ...]";
-  }
-  let contents = execute(reader, parameters.files , "utf8"); 
-  let requiredContents = execute(parameters.option, contents , parameters.count );
-  let result = format(parameters.files, requiredContents);
-  return result;
+  return parameters.files.map(function (file) {
+    if( !validater(file) ) {
+      return 'head: '+file+': No such file or directory';
+    }
+    let contents = execute(reader, file , "utf8"); 
+    let requiredContents = parameters.option(contents,parameters.count);
+    if( parameters.files.length == 1) {
+      return requiredContents;
+    }
+    let result = format(file, requiredContents);
+    return result;
+  }).join("\n\n");
 }
 
 module.exports = { head,
