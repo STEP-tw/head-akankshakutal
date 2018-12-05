@@ -74,14 +74,14 @@ describe("extractInput",function() {
 
   describe("select",function() {
 
-    it("should return getNLines function when input is -n",function() {
-      assert.equal(select("-n"),getNLines);
-      assert.equal(select("-n5"),getNLines);
+    it("should return getNBytes function when input is -c",function() {
+      assert.equal(select("-c"),getNBytes);
+      assert.equal(select("-c5"),getNBytes);
     });
 
-    it("should return getNBytes function when input is rather than -n",function() {
-      assert.equal(select("-c"),getNBytes);
-      assert.equal(select("-d"),getNBytes)
+    it("should return getNBytes function when input is rather than -c",function() {
+      assert.equal(select("-n"),getNLines);
+      assert.equal(select("-n5"),getNLines)
     });
 
   });
