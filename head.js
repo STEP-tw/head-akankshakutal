@@ -17,11 +17,15 @@ const { extractInput,execute,format } = require("./src/lib.js");
 const { readFileSync } = require("fs");
 
 const main = function() { 
+  let result;
   let userInputs = process.argv.slice(2);
   let parameters = extractInput(userInputs);
   let contents = execute(readFileSync, parameters.files , "utf8"); 
   let requiredContents = execute(parameters.option, contents , parameters.count );
-  let result = format(parameters.files, requiredContents);
+  result = format(parameters.files, requiredContents);
+  if(parameters.count <= 0 ) {
+    result = "head: illegal line count -- 0";
+  }
   console.log(result);
 }
 
