@@ -57,12 +57,15 @@ const format = function(fileNames,contents) {
 
 const head = function(userInputs,reader,validater) { 
   let parameters = extractInput(userInputs);
+  if(parameters.count < 1 ) {
+    return parameters.option == getNLines ? "head: illegal line count -- 0" : "head: illegal byte count -- 0";
+  }
+  if(!userInputs[0].startsWith("-n") && !userInputs[0].startsWith("-c") && parameters.files[0] != userInputs[0]) {
+   return "head: illegal option -- "+ userInputs[0][1] +"\nusage: head [-n lines | -c bytes] [file ...]";
+  }
   let contents = execute(reader, parameters.files , "utf8"); 
   let requiredContents = execute(parameters.option, contents , parameters.count );
   let result = format(parameters.files, requiredContents);
-  if(parameters.count <= 0 ) {
-    result = "head: illegal line count -- 0";
-  }
   return result;
 }
 

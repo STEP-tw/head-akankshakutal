@@ -17,5 +17,6 @@
   node ./head.js -n0 file1 
   node ./head.js -c 0 file1
   node ./head.js -n 0 file1
-  node ./head.js -c0 file1 file2
+  node ./head.js -e5 file1 
+  node ./head.js -x100 file1 file2
   

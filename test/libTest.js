@@ -161,4 +161,9 @@ describe("head",function() {
     assert.deepEqual(head(["-c5",file1],reader,validater),expectedOutput);
   });
 
+  it('should return error message when input  is other than n/c', function() {
+    let expectedOutput = "head: illegal option -- e\nusage: head [-n lines | -c bytes] [file ...]";
+    assert.deepEqual(head(["-e","File1","File2"], reader, validater),expectedOutput);
+  });
+
 });
