@@ -5,6 +5,8 @@ const { execute,
   getCount,
   getFileNames,
   extractInput,
+  format,
+  addHeading,
   getNBytes } = require("../src/lib.js");
 
 const add = num => num+10;
@@ -124,4 +126,21 @@ describe("extractInput",function() {
     assert.deepEqual(extractInput(["-n4","File1","File2","File3"]),{ option : getNLines, count : 4 , files : ["File1","File2","File3"] });
 
   });
+});
+
+describe("format",function() {
+  describe("addHeading",function() {
+    it("should return first arg im between ==> <== and second on next line",function() {
+      assert.equal(addHeading("Hello","How are you ? "),"==> Hello <==\nHow are you ? \n");
+    });
+  });
+  it("should return only contents when first array contains only one element ",function() {
+    assert.equal(format(["Hello"],["How are you ?"]),"How are you ?");
+  });
+
+  it("should return array elements alternatively when first array lenth is not equal to 1", function() { 
+    let expectedOutput = "==> Hello <==\nHow are you ? \n\n==> Hiii <==\nHello....\n\n==> Thank You <==\nWelcome\n"
+    assert.equal(format(["Hello","Hiii","Thank You"],["How are you ? ","Hello....","Welcome"]),expectedOutput);
+  });
+
 });

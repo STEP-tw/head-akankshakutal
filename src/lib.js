@@ -1,6 +1,6 @@
-const execute = function(functionName, files) { 
+const execute = function(functionName, files, encoding ) { 
   return files.map( function(element) {
-    return functionName(element,"utf8");
+    return functionName(element,encoding);
   });
 }
 
@@ -44,11 +44,24 @@ const extractInput = function(userInputs) {
   }
 }
 
+const addHeading = function(fileName,content) { 
+    return "==> "+ fileName + " <==\n"+ content+"\n";
+}
+
+const format = function(fileNames,contents) { 
+  if( fileNames.length == 1 ) {
+    return contents.join("");
+  }
+  return contents.map((content,index) => addHeading(fileNames[index],content)).join("\n");
+}
+
 module.exports = { execute,
   getNLines,
   select,
   getCount,
   getFileNames,
   extractInput,
+  format,
+  addHeading,
   getNBytes };
 
