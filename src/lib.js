@@ -13,7 +13,7 @@ const getNBytes = function(contents,numOfBytes=10) {
 }
 
 const select = function(option) { 
-  return ( (/-n/).test(option) ) ? getNLines : getNBytes;
+  return ( (/-c/).test(option) ) ? getNBytes : getNLines;
 }
 
 const getCount = function(userInputs) { 
