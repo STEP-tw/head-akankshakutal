@@ -20,4 +20,4 @@
   node ./head.js -e5 file1 
   node ./head.js -x100 file1 file2
   node ./head.js -n5 file 
-  node ./head.js file 
+  node ./head.js -n5d file1 

@@ -18,11 +18,15 @@ const getCount = function(userInputs) {
   if( !userInputs[0].match(/^-[nc]/g) &&  !userInputs[0].match(/^-[0-9]/g) ) {
     return 10;
   }
-  let match1 =  userInputs[0].match(/[0-9]/g); 
+  let match1 =  userInputs[0].match(/^-[0-9]/g); 
   if(match1) {
-    return +match1.join("");
+    return userInputs[0].slice(1,userInputs[0].length);
   }
-  return +userInputs[1].match(/[0-9]/g).join(""); 
+  let match2 =  userInputs[0].match(/^-[nc][0-9]/g); 
+  if(match2) {
+    return userInputs[0].slice(2,userInputs[0].length);
+  }
+  return userInputs[1]; 
 }
 
 const getFileNames = function(userInputs) { 
@@ -51,7 +55,7 @@ const format = function(fileName,contents) {
 }
 
 const validateInput  = function(userInputs,parameters) { 
-  if( parameters.count < 1 ) {
+  if( parameters.count < 1 || isNaN(parameters.count)) {
     return (parameters.option == getNBytes ) ? "head: illegal byte count -- "+parameters.count : "head: illegal line count -- " + parameters.count;
   }
   if( !userInputs[0].match(/^-[nc]/) && userInputs[0] != parameters.files[0] && !userInputs[0].match(/^-[0-9]/) ) {
