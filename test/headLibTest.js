@@ -7,7 +7,6 @@ const {
   getFileNames,
   parse,
   isValid,
-  format,
   addHeading,
   head,
   getNBytes

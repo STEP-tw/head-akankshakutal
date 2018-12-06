@@ -103,7 +103,6 @@ module.exports = {
   getCount,
   getFileNames,
   parse,
-  format,
   addHeading,
   getContents,
   isValid,
