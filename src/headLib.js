@@ -60,24 +60,27 @@ const validateInput  = function(args,userInput) {
   return "1";
 }
 
+const getContents  = function (fileSystem,userInput,file) {
+  if( !fileSystem.existsSync(file) ) {
+    return 'head: '+file+': No such file or directory';
+  }
+  let contents = fileSystem.readFileSync(file,"utf8"); 
+  let requiredContents = userInput.option(contents,userInput.count);
+  if( userInput.files.length == 1) {
+    return requiredContents;
+  }
+  return format(file, requiredContents);
+}
+
 const head = function(args,fileSystem) { 
   let userInput = parse(args);
   let validInput = validateInput(args,userInput);
   if( validInput != 1) {
     return validInput;
   }
-  return userInput.files.map(function (file) {
-    if( !fileSystem.existsSync(file) ) {
-      return 'head: '+file+': No such file or directory';
-    }
-    let contents = fileSystem.readFileSync(file,"utf8"); 
-    let requiredContents = userInput.option(contents,userInput.count);
-    if( userInput.files.length == 1) {
-      return requiredContents;
-    }
-    let result = format(file, requiredContents);
-    return result;
-  }).join("\n\n");
+  let formatContents = getContents.bind(null,fileSystem,userInput);
+  let formattedContents = userInput.files.map(formatContents);
+  return formattedContents.join("\n\n")
 }
 
 module.exports = { head,

@@ -8,7 +8,7 @@ const {
   format,
   addHeading,
   head,
-  getNBytes } = require("../src/lib.js");
+  getNBytes } = require("../src/headLib.js");
 
 const reader = file => file;
 const validater = (file) => (file == "exit");
