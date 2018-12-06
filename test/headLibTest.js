@@ -209,10 +209,28 @@ describe("isValid", function() {
 });
 
 describe("head", function() {
-  const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
 
-  it("should return error message when input file is not present ", function() {
+  it("should return error message when input contains count as 0 ", function() {
+    const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: illegal line count -- 0";
     assert.deepEqual(head(["-n0", "File1"], fileSystem), expectedOutput);
+  });
+
+  it("should return error message when input file is not present ", function() {
+  const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
+    let expectedOutput = "head: illegal line count -- File2";
+    assert.deepEqual(head(["-n", "File2"], fileSystem), expectedOutput);
+  });
+
+  it("should return error message when input contains invalid file ", function() {
+    const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
+    let expectedOutput = 'head: File1: No such file or directory';
+    assert.deepEqual(head(["-n", "5", "File1"], fileSystem), expectedOutput);
+  });
+
+  it("should return Hello message when all inputs are valid ", function() {
+    const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
+    let expectedOutput = 'Hello';
+    assert.deepEqual(head(["File1"], fileSystem), expectedOutput);
   });
 });
