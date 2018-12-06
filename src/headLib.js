@@ -10,29 +10,32 @@ const select = function(option) {
   return ( (/-c/).test(option) ) ? getNBytes : getNLines;
 }
 
+const isNumber = (value) => value.match(/^-[0-9]/g);
+const isValidType = (value) => value.match(/^-[nc]/g);
+const isValidOption = (value) => value.match(/^-[nc][0-9]/g);
+
 const getCount = function(args) { 
-  if( !args[0].match(/^-[nc]/g) &&  !args[0].match(/^-[0-9]/g) ) {
+  if( !isValidType(args[0]) &&  !isNumber(args[0]) ) {
     return 10;
   }
-  let match1 =  args[0].match(/^-[0-9]/g); 
-  if(match1) {
+  if(isNumber(args[0])) {
     return args[0].slice(1,args[0].length);
   }
-  let match2 =  args[0].match(/^-[nc][0-9]/g); 
-  if(match2) {
+  if(isValidOption(args[0])) {
     return args[0].slice(2,args[0].length);
   }
   return args[1]; 
 }
 
 const getFileNames = function(args) { 
-  if( args[0].match(/^-/) && args[0].match(/[0-9]/) ) {
-    return args.slice(1);
+  let sliceCount = 0;
+  if( args[0][0] == "-") {
+    sliceCount =1;
   }
-  if( args[0].match(/^-/) && ! args[0].match(/[0-9]/) ) {
-    return args.slice(2);
+  if(isFinite(args[1])) {
+    sliceCount =2;
   }
-  return args;
+  return args.slice(sliceCount);
 }
 
 const parse = function(args) { 
@@ -54,7 +57,7 @@ const validateInput  = function(args,userInput) {
   if( userInput.count < 1 || isNaN(userInput.count)) {
     return (userInput.option == getNBytes ) ? "head: illegal byte count -- "+userInput.count : "head: illegal line count -- " + userInput.count;
   }
-  if( !args[0].match(/^-[nc]/) && args[0] != userInput.files[0] && !args[0].match(/^-[0-9]/) ) {
+  if( !isValidType(args[0]) && args[0] != userInput.files[0] && !isNumber(args[0]) ) {
     return "head: illegal option -- "+ args[0].slice(0) +"\nusage: head [-n lines | -c bytes] [file ...]";
   }
   return "1";
