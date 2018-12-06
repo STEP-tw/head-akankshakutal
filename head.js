@@ -1,9 +1,9 @@
 const { head } = require("./src/lib.js");
-const { readFileSync,existsSync } = require("fs");
+const fs = require("fs");
 
 const main = function() { 
-  let userInputs = process.argv.slice(2);
-  let result = head(userInputs,readFileSync,existsSync);
+  let args = process.argv.slice(2);
+  let result = head(args,fs);
   console.log(result);
 }
 

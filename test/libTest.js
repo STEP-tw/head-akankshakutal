@@ -4,7 +4,7 @@ const { execute,
   select,
   getCount,
   getFileNames,
-  extractInput,
+  parse,
   format,
   addHeading,
   head,
@@ -76,7 +76,7 @@ describe("getNBytes",function() {
 
 });
 
-describe("extractInput",function() {
+describe("parse",function() {
 
   describe("select",function() {
 
@@ -125,9 +125,9 @@ describe("extractInput",function() {
   });
 
   it("should return object that contains three keys", function () {
-    assert.deepEqual(extractInput(["-n","4","File2","File3"]),{ option : getNLines, count : 4 , files : ["File2","File3"] });
+    assert.deepEqual(parse(["-n","4","File2","File3"]),{ option : getNLines, count : 4 , files : ["File2","File3"] });
 
-    assert.deepEqual(extractInput(["-n4","File1","File2","File3"]),{ option : getNLines, count : 4 , files : ["File1","File2","File3"] });
+    assert.deepEqual(parse(["-n4","File1","File2","File3"]),{ option : getNLines, count : 4 , files : ["File1","File2","File3"] });
 
   });
 });

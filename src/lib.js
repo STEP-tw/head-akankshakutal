@@ -14,35 +14,35 @@ const select = function(option) {
   return ( (/-c/).test(option) ) ? getNBytes : getNLines;
 }
 
-const getCount = function(userInputs) { 
-  if( !userInputs[0].match(/^-[nc]/g) &&  !userInputs[0].match(/^-[0-9]/g) ) {
+const getCount = function(args) { 
+  if( !args[0].match(/^-[nc]/g) &&  !args[0].match(/^-[0-9]/g) ) {
     return 10;
   }
-  let match1 =  userInputs[0].match(/^-[0-9]/g); 
+  let match1 =  args[0].match(/^-[0-9]/g); 
   if(match1) {
-    return userInputs[0].slice(1,userInputs[0].length);
+    return args[0].slice(1,args[0].length);
   }
-  let match2 =  userInputs[0].match(/^-[nc][0-9]/g); 
+  let match2 =  args[0].match(/^-[nc][0-9]/g); 
   if(match2) {
-    return userInputs[0].slice(2,userInputs[0].length);
+    return args[0].slice(2,args[0].length);
   }
-  return userInputs[1]; 
+  return args[1]; 
 }
 
-const getFileNames = function(userInputs) { 
-  if( userInputs[0].match(/^-/) && userInputs[0].match(/[0-9]/) ) {
-    return userInputs.slice(1);
+const getFileNames = function(args) { 
+  if( args[0].match(/^-/) && args[0].match(/[0-9]/) ) {
+    return args.slice(1);
   }
-  if( userInputs[0].match(/^-/) && ! userInputs[0].match(/[0-9]/) ) {
-    return userInputs.slice(2);
+  if( args[0].match(/^-/) && ! args[0].match(/[0-9]/) ) {
+    return args.slice(2);
   }
-  return userInputs;
+  return args;
 }
 
-const extractInput = function(userInputs) { 
-  return { option : select(userInputs[0]),
-    count : getCount(userInputs.slice(0,2)),
-    files : getFileNames(userInputs)
+const parse = function(args) { 
+  return { option : select(args[0]),
+    count : getCount(args.slice(0,2)),
+    files : getFileNames(args)
   }
 }
 
@@ -54,29 +54,29 @@ const format = function(fileName,contents) {
   return  addHeading(fileName,contents);
 }
 
-const validateInput  = function(userInputs,parameters) { 
-  if( parameters.count < 1 || isNaN(parameters.count)) {
-    return (parameters.option == getNBytes ) ? "head: illegal byte count -- "+parameters.count : "head: illegal line count -- " + parameters.count;
+const validateInput  = function(args,userInput) { 
+  if( userInput.count < 1 || isNaN(userInput.count)) {
+    return (userInput.option == getNBytes ) ? "head: illegal byte count -- "+userInput.count : "head: illegal line count -- " + userInput.count;
   }
-  if( !userInputs[0].match(/^-[nc]/) && userInputs[0] != parameters.files[0] && !userInputs[0].match(/^-[0-9]/) ) {
-    return "head: illegal option -- "+ userInputs[0].slice(0) +"\nusage: head [-n lines | -c bytes] [file ...]";
+  if( !args[0].match(/^-[nc]/) && args[0] != userInput.files[0] && !args[0].match(/^-[0-9]/) ) {
+    return "head: illegal option -- "+ args[0].slice(0) +"\nusage: head [-n lines | -c bytes] [file ...]";
   }
   return "1";
 }
 
-const head = function(userInputs,reader,validater) { 
-  let parameters = extractInput(userInputs);
-  let validInput = validateInput(userInputs,parameters);
+const head = function(args,fileSystem) { 
+  let userInput = parse(args);
+  let validInput = validateInput(args,userInput);
   if( validInput != 1) {
     return validInput;
   }
-  return parameters.files.map(function (file) {
-    if( !validater(file) ) {
+  return userInput.files.map(function (file) {
+    if( !fileSystem.existsSync(file) ) {
       return 'head: '+file+': No such file or directory';
     }
-    let contents = execute(reader, file , "utf8"); 
-    let requiredContents = parameters.option(contents,parameters.count);
-    if( parameters.files.length == 1) {
+    let contents = execute(fileSystem.readFileSync, file , "utf8"); 
+    let requiredContents = userInput.option(contents,userInput.count);
+    if( userInput.files.length == 1) {
       return requiredContents;
     }
     let result = format(file, requiredContents);
@@ -90,7 +90,7 @@ module.exports = { head,
   select,
   getCount,
   getFileNames,
-  extractInput,
+  parse,
   format,
   addHeading,
   getNBytes,
