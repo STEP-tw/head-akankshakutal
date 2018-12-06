@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { execute, 
+const { 
   getNLines,
   select,
   getCount,
@@ -10,19 +10,8 @@ const { execute,
   head,
   getNBytes } = require("../src/lib.js");
 
-const add = num => num+10;
-const sub = (num1,num2) => num1-num2;
 const reader = file => file;
 const validater = (file) => (file == "exit");
-
-describe("execute",function() {
-  it("should call function with one argument ",function() {
-    assert.deepEqual(execute(add,5),15);
-  });
-  it("should call function with two arguments ",function() { 
-      assert.deepEqual(execute(sub,10,5),5);
-  });
-});
 
 describe("getNLines",function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ"

@@ -1,7 +1,3 @@
-const execute = function(functionName, file, encoding ) { 
-    return functionName(file,encoding);
-}
-
 const getNLines = function(content,numOfLines=10) { 
   return content.split("\n").slice(0,numOfLines).join("\n");
 }
@@ -74,7 +70,7 @@ const head = function(args,fileSystem) {
     if( !fileSystem.existsSync(file) ) {
       return 'head: '+file+': No such file or directory';
     }
-    let contents = execute(fileSystem.readFileSync, file , "utf8"); 
+    let contents = fileSystem.readFileSync(file,"utf8"); 
     let requiredContents = userInput.option(contents,userInput.count);
     if( userInput.files.length == 1) {
       return requiredContents;
@@ -85,7 +81,6 @@ const head = function(args,fileSystem) {
 }
 
 module.exports = { head,
-  execute, 
   getNLines,
   select,
   getCount,
