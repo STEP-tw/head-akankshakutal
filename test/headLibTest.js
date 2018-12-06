@@ -95,40 +95,27 @@ describe("parse", function() {
 
   describe("getFileNames", function() {
     it("should return array slice by 1 when input contains /-[0-9]/ ", function() {
-      assert.deepEqual(getFileNames(["-n4", "File1", "File2"]), [
-        "File1",
-        "File2"
-      ]);
+      let input = ["-n4", "File1", "File2"];
+      let expectedOutput = ["File1","File2"];
+      assert.deepEqual(getFileNames(input), expectedOutput );
     });
 
     it("should return array slice by 2 when input does not contains any number", function() {
-      assert.deepEqual(getFileNames(["-n", "10", "File1", "File2"]), [
-        "File1",
-        "File2"
-      ]);
+      let input = ["-n", "10", "File1", "File2"];
+      let expectedOutput = ["File1","File2"];
+      assert.deepEqual(getFileNames(input), expectedOutput );
     });
 
     it("should return given array when input doesn't contains - and any number", function() {
-      assert.deepEqual(getFileNames(["Hello", "Hiiii", "Welcome"]), [
-        "Hello",
-        "Hiiii",
-        "Welcome"
-      ]);
+      let input = ["Hello", "Hiiii", "Welcome"];
+      let expectedOutput = ["Hello","Hiiii","Welcome"];
+      assert.deepEqual(getFileNames(input), expectedOutput);
     });
   });
 
   it("should return object that contains three keys", function() {
-    assert.deepEqual(parse(["-n", "4", "File2", "File3"]), {
-      option: getNLines,
-      count: 4,
-      files: ["File2", "File3"]
-    });
-
-    assert.deepEqual(parse(["-n4", "File1", "File2", "File3"]), {
-      option: getNLines,
-      count: 4,
-      files: ["File1", "File2", "File3"]
-    });
+    assert.deepEqual(parse(["-n", "4", "File2", "File3"]), {option: getNLines, count: 4, files: ["File2", "File3"]});
+    assert.deepEqual(parse(["-n4", "File1", "File2", "File3"]), {option: getNLines, count: 4, files: ["File1", "File2", "File3"]});
   });
 });
 
@@ -148,11 +135,7 @@ describe("getContents", function() {
   });
 
   it("should return Hello twice because file exists", function() {
-    let userInput = {
-      option: getNLines,
-      count: "1",
-      files: ["file1", "file2"]
-    };
+    let userInput = { option: getNLines, count: "1", files: ["file1", "file2"] };
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "==> file1 <==\nHello";
     assert.equal(getContents(fileSystem, userInput, "file1"), expectedOutput);
@@ -161,33 +144,26 @@ describe("getContents", function() {
 
 describe("isValid", function() {
   let userInput = { option: getNLines, count: "1", files: ["file1"] };
-  let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
 
   it("should return error message with usage message when option is invalid", function() {
-    let expectedOutput =
-      "head: illegal option -- -v\nusage: head [-n lines | -c bytes] [file ...]";
-    assert.equal(
-      isValid(["-v", "file1"], userInput, fileSystem),
-      expectedOutput
-    );
+    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
+    let expectedOutput = "head: illegal option -- -v\nusage: head [-n lines | -c bytes] [file ...]";
+    let args = ["-v", "file1"];
+    assert.equal(isValid(args, userInput, fileSystem), expectedOutput);
   });
 
   it("should return Hello message when option is valid", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.equal(
-      isValid(["-n", "file1"], userInput, fileSystem),
-      expectedOutput
-    );
+    let args = ["-n", "file1"];
+    assert.equal(isValid(args, userInput, fileSystem), expectedOutput);
   });
 
   it("should return Hello message when option is valid", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.equal(
-      isValid(["-c0", "file1"], userInput, fileSystem),
-      expectedOutput
-    );
+    let args = ["-c0", "file1"];
+    assert.equal(isValid(args, userInput, fileSystem),expectedOutput);
   });
 });
 
@@ -200,7 +176,7 @@ describe("head", function() {
   });
 
   it("should return error message when input file is not present ", function() {
-  const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
+    const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "head: illegal line count -- File2";
     assert.deepEqual(head(["-n", "File2"], fileSystem), expectedOutput);
   });
