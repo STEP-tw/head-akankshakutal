@@ -94,5 +94,6 @@ module.exports = { head,
   parse,
   format,
   addHeading,
+  getContents,
   getNBytes,
 };

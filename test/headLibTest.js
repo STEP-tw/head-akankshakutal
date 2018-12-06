@@ -1,6 +1,7 @@
 const assert = require("assert");
 const { 
   getNLines,
+  getContents,
   select,
   getCount,
   getFileNames,
@@ -138,11 +139,29 @@ describe("format",function() {
 
 });
 
+describe("getContents",function() {
+
+  let userInput = { option : getNLines, count : "1", files : ["file1"]}
+
+  it("should return error message ",function() {
+    let fileSystem = { readFileSync :() =>"Hello" , existsSync : () => false  }
+    let expectedOutput = 'head: file1: No such file or directory'
+    assert.equal(getContents(fileSystem,userInput,"file1"),expectedOutput);
+  });
+
+  it("should return Hello because file exists",function() {
+    let fileSystem = { readFileSync :() =>"Hello" , existsSync : () => true  }
+    let expectedOutput = 'Hello'
+    assert.equal(getContents(fileSystem,userInput,"file1"),expectedOutput);
+  });
+
+});
 describe("head",function() {
+  const fileSystem = { readFileSync :() =>"Hello" , existsSync : () => false  }
 
   it('should return error message when input file is not present ', function() {
     let expectedOutput = 'head: illegal line count -- 0';
-    assert.deepEqual(head(["-n0","File1"], reader, validater),expectedOutput);
+    assert.deepEqual(head(["-n0","File1"],fileSystem),expectedOutput);
   });
 
 });
