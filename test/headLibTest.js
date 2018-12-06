@@ -6,13 +6,11 @@ const {
   getCount,
   getFileNames,
   parse,
+  isValid,
   format,
   addHeading,
   head,
   getNBytes } = require("../src/headLib.js");
-
-const reader = file => file;
-const validater = (file) => (file == "exit");
 
 describe("getNLines",function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ"
@@ -96,6 +94,9 @@ describe("parse",function() {
       assert.equal(getCount(["-c","20"]),20);
     });
 
+    it("should return number that specified in 0 index",function() { 
+      assert.equal(getCount(["-20","File1"]),20);
+    });
   });
 
   describe("getFileNames",function() {
@@ -155,7 +156,38 @@ describe("getContents",function() {
     assert.equal(getContents(fileSystem,userInput,"file1"),expectedOutput);
   });
 
+  it("should return Hello twice because file exists",function() {
+    let userInput = { option : getNLines, count : "1", files : ["file1","file2"]}
+    let fileSystem = { readFileSync :() =>"Hello" , existsSync : () => true  }
+    let expectedOutput = '==> file1 <==\nHello'
+    assert.equal(getContents(fileSystem,userInput,"file1"),expectedOutput);
+  });
 });
+
+describe("isValid",function() {
+
+  let userInput = { option : getNLines, count : "1", files : ["file1"]}
+  let fileSystem = { readFileSync :() =>"Hello" , existsSync : () => true  }
+
+  it("should return error message with usage message when option is invalid",function() {
+    let expectedOutput = 'head: illegal option -- -v\nusage: head [-n lines | -c bytes] [file ...]';
+    assert.equal(isValid(["-v","file1"],userInput,fileSystem),expectedOutput);
+  });
+
+  it("should return Hello message when option is valid",function() {
+    let fileSystem = { readFileSync :() =>"Hello" , existsSync : () =>true  }
+    let expectedOutput = 'Hello';
+    assert.equal(isValid(["-n","file1"],userInput,fileSystem),expectedOutput);
+  });
+
+  it("should return Hello message when option is valid",function() {
+    let fileSystem = { readFileSync :() =>"Hello" , existsSync : () =>true  }
+    let expectedOutput = 'Hello';
+    assert.equal(isValid(["-c0","file1"],userInput,fileSystem),expectedOutput);
+  });
+
+});
+
 describe("head",function() {
   const fileSystem = { readFileSync :() =>"Hello" , existsSync : () => false  }
 

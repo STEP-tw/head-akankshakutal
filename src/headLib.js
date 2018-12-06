@@ -11,7 +11,9 @@ const select = function(option) {
 }
 
 const isNumber = (value) => value.match(/^-[0-9]/g);
+
 const isValidType = (value) => value.match(/^-[nc]/g);
+
 const isValidOption = (value) => value.match(/^-[nc][0-9]/g);
 
 const getCount = function(args) { 
@@ -53,14 +55,21 @@ const format = function(fileName,contents) {
   return  addHeading(fileName,contents);
 }
 
-const validateInput  = function(args,userInput) { 
+const isValid  = function(args,userInput,fileSystem) { 
+  const invalidLineCount = "head: illegal line count -- ";
+  const invalidByteCount = "head: illegal byte count -- ";
+  const errorMessage = 'head: illegal option -- ';
+  const usageMessage = 'usage: head [-n lines | -c bytes] [file ...]';
+
   if( userInput.count < 1 || isNaN(userInput.count)) {
-    return (userInput.option == getNBytes ) ? "head: illegal byte count -- "+userInput.count : "head: illegal line count -- " + userInput.count;
+    return (userInput.option == getNBytes ) ? invalidByteCount+userInput.count : invalidLineCount+userInput.count;
   }
   if( !isValidType(args[0]) && args[0] != userInput.files[0] && !isNumber(args[0]) ) {
-    return "head: illegal option -- "+ args[0].slice(0) +"\nusage: head [-n lines | -c bytes] [file ...]";
+    return errorMessage+args[0].slice(0)+"\n"+usageMessage;
   }
-  return "1";
+  let formatContents = getContents.bind(null,fileSystem,userInput);
+  let formattedContents = userInput.files.map(formatContents);
+  return formattedContents.join("\n\n");
 }
 
 const getContents  = function (fileSystem,userInput,file) {
@@ -77,13 +86,8 @@ const getContents  = function (fileSystem,userInput,file) {
 
 const head = function(args,fileSystem) { 
   let userInput = parse(args);
-  let validInput = validateInput(args,userInput);
-  if( validInput != 1) {
-    return validInput;
-  }
-  let formatContents = getContents.bind(null,fileSystem,userInput);
-  let formattedContents = userInput.files.map(formatContents);
-  return formattedContents.join("\n\n")
+  let contents = isValid(args,userInput,fileSystem);
+  return contents;
 }
 
 module.exports = { head,
@@ -95,5 +99,6 @@ module.exports = { head,
   format,
   addHeading,
   getContents,
-  getNBytes,
+  isValid,
+  getNBytes 
 };
