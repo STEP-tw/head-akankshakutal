@@ -133,22 +133,6 @@ describe("parse", function() {
   });
 });
 
-describe("format", function() {
-  describe("addHeading", function() {
-    it("should return first arg im between ==> <== and second on next line", function() {
-      assert.equal(
-        addHeading("Hello", "How are you ? "),
-        "==> Hello <==\nHow are you ? "
-      );
-    });
-  });
-
-  it("should return array elements alternatively when first array lenth is not equal to 1", function() {
-    let expectedOutput = "==> Hello <==\nHow are you ?";
-    assert.equal(format("Hello", "How are you ?"), expectedOutput);
-  });
-});
-
 describe("getContents", function() {
   let userInput = { option: getNLines, count: "1", files: ["file1"] };
 

@@ -55,10 +55,6 @@ const addHeading = function(fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
 
-const format = function(fileName, contents) {
-  return addHeading(fileName, contents);
-};
-
 const isValid = function(args, userInput, fileSystem) {
   const invalidLineCount = "head: illegal line count -- ";
   const invalidByteCount = "head: illegal byte count -- ";
@@ -91,7 +87,7 @@ const getContents = function(fileSystem, userInput, file) {
   if (userInput.files.length == 1) {
     return requiredContents;
   }
-  return format(file, requiredContents);
+  return addHeading(file, requiredContents);
 };
 
 const head = function(args, fileSystem) {
