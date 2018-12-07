@@ -9,7 +9,14 @@ const {
   checkErrors,
   addHeading,
   head,
-  getNBytes
+  getNBytes,
+  isNumber,
+  isTypeAndCount,
+  isNotEqual,
+  isOnlyType,
+  isValidOption,
+  isValidType,
+  invalidCount
 } = require("../src/headLib.js");
 
 describe("getNLines", function() {
@@ -98,6 +105,12 @@ describe("parse", function() {
     };
     assert.deepEqual(parse(input), expectedOutput);
   });
+
+  it("should return type n, range 10 and given input in files if there is no type or range specified", function() {
+    let input = ["file1", "file2"];
+    let expectedOutput = { option: "n", count: 10, files: ["file1", "file2"] };
+    assert.deepEqual(parse(input), expectedOutput);
+  });
 });
 
 describe("getContents", function() {
@@ -158,5 +171,57 @@ describe("head", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
     assert.deepEqual(head(["File1"], fileSystem), expectedOutput);
+  });
+});
+
+
+
+
+
+
+describe("isNumber", function() {
+  it("it Should return null if suplied argument is not number", function() {
+    assert.deepEqual(isNumber("aa"), null);
+    assert.deepEqual(isNumber("8"), null);
+  });
+
+  it("it should return array if supplied argument is -anyNumber", function() {
+    assert.deepEqual(isNumber("-8"), ['-8']);
+  });
+});
+
+describe("isValidType", function() {
+  it("it should return array if argument is only a type", function() {
+    assert.deepEqual(isValidType("-n"), ["-n"]);
+  });
+  it("should return null if argument is only number", function() {
+    assert.deepEqual(isValidType("-4"), null);
+  });
+  it("should return false if argument is only type w", function() {
+    assert.deepEqual(isValidType("-t"), null);
+  });
+});
+
+describe("isOnlyType", function() {
+  it("should return null if the arguments are not alphabate", function() {
+    assert.deepEqual(isOnlyType("-e"), ["-e"]);
+  });
+
+  it("should return array of alphabate if the arguments are alphabate and value", function() {
+    assert.deepEqual(isOnlyType("-r4"), ["-r"]);
+  });
+});
+
+describe("isValidOption", function() {
+  it("should return null if number is not given ", function() {
+    assert.deepEqual(isValidOption("-n"), null);
+  });
+
+  it("should return null if arguments are only numbers", function() {
+    assert.deepEqual(isValidOption("-4"), null);
+  });
+
+  it("should return array if arguments are both type and values", function() {
+    assert.deepEqual(isValidOption("-n4"), ["-n4"]);
   });
 });

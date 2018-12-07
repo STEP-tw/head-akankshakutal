@@ -9,20 +9,37 @@ const getNBytes = function(contents, numOfBytes = 10) {
   return contents.slice(0, numOfBytes);
 };
 
-const isNumber = value => value.match(/^-[0-9]/g);
+const isNumber = function (value) {
+  return value.match(/^-[0-9]/g);
+}
 
-const isValidType = value => value.match(/^-[nc]/g);
+const isValidType = function (value) {
+  return value.match(/^-[nc]/g);
+}
 
-const isOnlyType = value => value.match(/^-[a-z]/g);
+const isOnlyType = function (value) {
+  return value.match(/^-[a-z]/g);
+}
 
-const isValidOption = value => value.match(/^-[a-z][0-9]/g);
+const isValidOption = function (value) {
+  return value.match(/^-[a-z][0-9]/g);
+}
 
-const isNotEqual = (x, y) => x != y;
+const isNotEqual = function(x, y) {
+  return x != y;
+}
 
-const isTypeAndCount = (x, y) =>
-  !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
+const isTypeAndCount = function (x, y) {
+  return !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
+}
 
-const invalidCount = count => count < 1 || isNaN(count);
+const invalidCount = function (count) {
+  return count < 1 || isNaN(count);
+}
+
+const addHeading = function(fileName, content) {
+  return "==> " + fileName + " <==\n" + content;
+};
 
 const parse = function(args) {
   let parsedInput = { option: "n", count: 10, files: args.slice(0) };
@@ -41,10 +58,6 @@ const parse = function(args) {
     parsedInput.files = args.slice(1);
   }
   return parsedInput;
-};
-
-const addHeading = function(fileName, content) {
-  return "==> " + fileName + " <==\n" + content;
 };
 
 const checkErrors = function(args, userInput) {
@@ -95,5 +108,12 @@ module.exports = {
   addHeading,
   getContents,
   checkErrors,
-  getNBytes
+  getNBytes,
+  isNumber,
+  isTypeAndCount,
+  isValidOption,
+  isOnlyType,
+  isNotEqual,
+  isValidType,
+  invalidCount
 };
