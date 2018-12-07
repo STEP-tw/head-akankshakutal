@@ -63,64 +63,14 @@ describe("getNBytes", function() {
 });
 
 describe("parse", function() {
-  describe("select", function() {
-    it("should return getNBytes function when input is -c", function() {
-      assert.equal(select("-c"), getNBytes);
-      assert.equal(select("-c5"), getNBytes);
-    });
-
-    it("should return getNBytes function when input is rather than -c", function() {
-      assert.equal(select("-n"), getNLines);
-      assert.equal(select("-n5"), getNLines);
-    });
-  });
-
-  describe("getCount", function() {
-    it("should return 10 when -n/-c is not given ", function() {
-      assert.equal(getCount(["-d", "File1"]), 10);
-    });
-
-    it("should return specified number from that string ", function() {
-      assert.equal(getCount(["-n20", "file1"]), 20);
-    });
-
-    it("should return number that specified in 1 index", function() {
-      assert.equal(getCount(["-c", "20"]), 20);
-    });
-
-    it("should return number that specified in 0 index", function() {
-      assert.equal(getCount(["-20", "File1"]), 20);
-    });
-  });
-
-  describe("getFileNames", function() {
-    it("should return array slice by 1 when input contains /-[0-9]/ ", function() {
-      let input = ["-n4", "File1", "File2"];
-      let expectedOutput = ["File1","File2"];
-      assert.deepEqual(getFileNames(input), expectedOutput );
-    });
-
-    it("should return array slice by 2 when input does not contains any number", function() {
-      let input = ["-n", "10", "File1", "File2"];
-      let expectedOutput = ["File1","File2"];
-      assert.deepEqual(getFileNames(input), expectedOutput );
-    });
-
-    it("should return given array when input doesn't contains - and any number", function() {
-      let input = ["Hello", "Hiiii", "Welcome"];
-      let expectedOutput = ["Hello","Hiiii","Welcome"];
-      assert.deepEqual(getFileNames(input), expectedOutput);
-    });
-  });
-
   it("should return object that contains three keys", function() {
-    assert.deepEqual(parse(["-n", "4", "File2", "File3"]), {option: getNLines, count: 4, files: ["File2", "File3"]});
-    assert.deepEqual(parse(["-n4", "File1", "File2", "File3"]), {option: getNLines, count: 4, files: ["File1", "File2", "File3"]});
+    assert.deepEqual(parse(["-n", "4", "File2", "File3"]), {option: "n", count: 4, files: ["File2", "File3"]});
+    assert.deepEqual(parse(["-n4", "File1", "File2", "File3"]), {option: "n", count: 4, files: ["File1", "File2", "File3"]});
   });
 });
 
 describe("getContents", function() {
-  let userInput = { option: getNLines, count: "1", files: ["file1"] };
+  let userInput = { option: "n", count: "1", files: ["file1"] };
 
   it("should return error message ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
@@ -135,7 +85,7 @@ describe("getContents", function() {
   });
 
   it("should return Hello twice because file exists", function() {
-    let userInput = { option: getNLines, count: "1", files: ["file1", "file2"] };
+    let userInput = { option: "n", count: "1", files: ["file1", "file2"] };
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "==> file1 <==\nHello";
     assert.equal(getContents(fileSystem, userInput, "file1"), expectedOutput);
@@ -143,11 +93,11 @@ describe("getContents", function() {
 });
 
 describe("isValid", function() {
-  let userInput = { option: getNLines, count: "1", files: ["file1"] };
+  let userInput = { option: "n", count: "1", files: ["file1"] };
 
   it("should return error message with usage message when option is invalid", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = "head: illegal option -- -v\nusage: head [-n lines | -c bytes] [file ...]";
+    let expectedOutput = "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
     let args = ["-v", "file1"];
     assert.equal(isValid(args, userInput, fileSystem), expectedOutput);
   });

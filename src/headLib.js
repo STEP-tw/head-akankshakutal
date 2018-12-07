@@ -17,38 +17,27 @@ const isNumber = value => value.match(/^-[0-9]/g);
 
 const isValidType = value => value.match(/^-[nc]/g);
 
-const isValidOption = value => value.match(/^-[nc][0-9]/g);
+const isOnlyType = value => value.match(/^-[a-z]/g);
 
-const getCount = function(args) {
-  if (!isValidType(args[0]) && !isNumber(args[0])) {
-    return 10;
-  }
-  if (isNumber(args[0])) {
-    return args[0].slice(1, args[0].length);
-  }
-  if (isValidOption(args[0])) {
-    return args[0].slice(2, args[0].length);
-  }
-  return args[1];
-};
-
-const getFileNames = function(args) {
-  let sliceCount = 0;
-  if (args[0][0] == "-") {
-    sliceCount = 1;
-  }
-  if (isFinite(args[1])) {
-    sliceCount = 2;
-  }
-  return args.slice(sliceCount);
-};
+const isValidOption = value => value.match(/^-[a-z][0-9]/g);
 
 const parse = function(args) {
-  return {
-    option: select(args[0]),
-    count: getCount(args.slice(0, 2)),
-    files: getFileNames(args)
-  };
+  let parsedInput = { option: "n", count: 10, files: args.slice(0) };
+  if (isOnlyType(args[0])) {
+    parsedInput.option = args[0][1];
+    parsedInput.count = args[1];
+    parsedInput.files = args.slice(2);
+  }
+  if (isNumber(args[0])) {
+    parsedInput.count = args[0].slice(1);
+    parsedInput.files = args.slice(1);
+  }
+  if (isValidOption(args[0])) {
+    parsedInput.option = args[0][1];
+    parsedInput.count = args[0].slice(2);
+    parsedInput.files = args.slice(1);
+  }
+  return parsedInput;
 };
 
 const addHeading = function(fileName, content) {
@@ -61,17 +50,13 @@ const isValid = function(args, userInput, fileSystem) {
   const errorMessage = "head: illegal option -- ";
   const usageMessage = "usage: head [-n lines | -c bytes] [file ...]";
 
+  if ( !isValidType(args[0]) && args[0] != userInput.files[0] && !isNumber(args[0]) ) {
+    return errorMessage + args[0].slice(1) + "\n" + usageMessage;
+  }
   if (userInput.count < 1 || isNaN(userInput.count)) {
     return userInput.option == getNBytes
       ? invalidByteCount + userInput.count
       : invalidLineCount + userInput.count;
-  }
-  if (
-    !isValidType(args[0]) &&
-    args[0] != userInput.files[0] &&
-    !isNumber(args[0])
-  ) {
-    return errorMessage + args[0].slice(0) + "\n" + usageMessage;
   }
   let formatContents = getContents.bind(null, fileSystem, userInput);
   let formattedContents = userInput.files.map(formatContents);
@@ -83,7 +68,11 @@ const getContents = function(fileSystem, userInput, file) {
     return "head: " + file + ": No such file or directory";
   }
   let contents = fileSystem.readFileSync(file, "utf8");
-  let requiredContents = userInput.option(contents, userInput.count);
+   let requiredContents = getNBytes(contents,userInput.count);
+  if(userInput.option == "n") {
+    requiredContents = getNLines(contents,userInput.count);
+  }
+
   if (userInput.files.length == 1) {
     return requiredContents;
   }
@@ -99,9 +88,6 @@ const head = function(args, fileSystem) {
 module.exports = {
   head,
   getNLines,
-  select,
-  getCount,
-  getFileNames,
   parse,
   addHeading,
   getContents,
