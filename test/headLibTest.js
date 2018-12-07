@@ -6,7 +6,7 @@ const {
   getCount,
   getFileNames,
   parse,
-  isValid,
+  checkErrors,
   addHeading,
   head,
   getNBytes
@@ -67,6 +67,13 @@ describe("parse", function() {
     assert.deepEqual(parse(["-n", "4", "File2", "File3"]), {option: "n", count: 4, files: ["File2", "File3"]});
     assert.deepEqual(parse(["-n4", "File1", "File2", "File3"]), {option: "n", count: 4, files: ["File1", "File2", "File3"]});
   });
+  it("should return object which contains string in count",function() { 
+     assert.deepEqual(parse(["-n", "File1", "File2", "File3"]), {option: "n", count: "File1", files: ["File2", "File3"]}); 
+  });
+
+  it("should return object which contains n as a default option ",function() { 
+     assert.deepEqual(parse(["-20", "File1", "File2", "File3"]), {option: "n", count: "20", files: ["File1","File2", "File3"]}); 
+  });
 });
 
 describe("getContents", function() {
@@ -85,36 +92,23 @@ describe("getContents", function() {
   });
 
   it("should return Hello twice because file exists", function() {
-    let userInput = { option: "n", count: "1", files: ["file1", "file2"] };
-    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = "==> file1 <==\nHello";
+    let userInput = { option: "c", count: "2", files: ["file1", "file2"] };
+    let fileSystem = { readFileSync: () => "He", existsSync: () => true };
+    let expectedOutput = "==> file1 <==\nHe";
     assert.equal(getContents(fileSystem, userInput, "file1"), expectedOutput);
   });
 });
 
-describe("isValid", function() {
+describe("checkErrors", function() {
   let userInput = { option: "n", count: "1", files: ["file1"] };
 
   it("should return error message with usage message when option is invalid", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
     let args = ["-v", "file1"];
-    assert.equal(isValid(args, userInput, fileSystem), expectedOutput);
+    assert.equal(checkErrors(args, userInput), expectedOutput);
   });
 
-  it("should return Hello message when option is valid", function() {
-    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = "Hello";
-    let args = ["-n", "file1"];
-    assert.equal(isValid(args, userInput, fileSystem), expectedOutput);
-  });
-
-  it("should return Hello message when option is valid", function() {
-    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = "Hello";
-    let args = ["-c0", "file1"];
-    assert.equal(isValid(args, userInput, fileSystem),expectedOutput);
-  });
 });
 
 describe("head", function() {
@@ -142,4 +136,5 @@ describe("head", function() {
     let expectedOutput = 'Hello';
     assert.deepEqual(head(["File1"], fileSystem), expectedOutput);
   });
+
 });
