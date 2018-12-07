@@ -63,16 +63,40 @@ describe("getNBytes", function() {
 });
 
 describe("parse", function() {
-  it("should return object that contains three keys", function() {
-    assert.deepEqual(parse(["-n", "4", "File2", "File3"]), {option: "n", count: 4, files: ["File2", "File3"]});
-    assert.deepEqual(parse(["-n4", "File1", "File2", "File3"]), {option: "n", count: 4, files: ["File1", "File2", "File3"]});
-  });
-  it("should return object which contains string in count",function() { 
-     assert.deepEqual(parse(["-n", "File1", "File2", "File3"]), {option: "n", count: "File1", files: ["File2", "File3"]}); 
+  it("should return object when count is with option", function() {
+    let input = ["-n4", "File1", "File2", "File3"];
+    let expectedOutput = {
+      option: "n",
+      count: 4,
+      files: ["File1", "File2", "File3"]
+    };
+    assert.deepEqual(parse(input), expectedOutput);
   });
 
-  it("should return object which contains n as a default option ",function() { 
-     assert.deepEqual(parse(["-20", "File1", "File2", "File3"]), {option: "n", count: "20", files: ["File1","File2", "File3"]}); 
+  it("should return object when count is on second index ", function() {
+    let input = ["-n", "4", "File2", "File3"];
+    let expectedOutput = { option: "n", count: 4, files: ["File2", "File3"] };
+    assert.deepEqual(parse(input), expectedOutput);
+  });
+
+  it("should return object which contains string in count", function() {
+    let input = ["-n", "File1", "File2", "File3"];
+    let expectedOutput = {
+      option: "n",
+      count: "File1",
+      files: ["File2", "File3"]
+    };
+    assert.deepEqual(parse(input), expectedOutput);
+  });
+
+  it("should return object which contains n as a default option ", function() {
+    let input = ["-20", "File1", "File2", "File3"];
+    let expectedOutput = {
+      option: "n",
+      count: "20",
+      files: ["File1", "File2", "File3"]
+    };
+    assert.deepEqual(parse(input), expectedOutput);
   });
 });
 
@@ -104,15 +128,14 @@ describe("checkErrors", function() {
 
   it("should return error message with usage message when option is invalid", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
+    let expectedOutput =
+      "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
     let args = ["-v", "file1"];
     assert.equal(checkErrors(args, userInput), expectedOutput);
   });
-
 });
 
 describe("head", function() {
-
   it("should return error message when input contains count as 0 ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: illegal line count -- 0";
@@ -127,14 +150,13 @@ describe("head", function() {
 
   it("should return error message when input contains invalid file ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
-    let expectedOutput = 'head: File1: No such file or directory';
+    let expectedOutput = "head: File1: No such file or directory";
     assert.deepEqual(head(["-n", "5", "File1"], fileSystem), expectedOutput);
   });
 
   it("should return Hello message when all inputs are valid ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = 'Hello';
+    let expectedOutput = "Hello";
     assert.deepEqual(head(["File1"], fileSystem), expectedOutput);
   });
-
 });

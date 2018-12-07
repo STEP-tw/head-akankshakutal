@@ -17,11 +17,12 @@ const isOnlyType = value => value.match(/^-[a-z]/g);
 
 const isValidOption = value => value.match(/^-[a-z][0-9]/g);
 
-const isNotEqual = (x,y) => x!=y;
+const isNotEqual = (x, y) => x != y;
 
-const isTypeAndCount = (x,y) => !isValidType(x) && isNotEqual(x,y) && !isNumber(x); 
+const isTypeAndCount = (x, y) =>
+  !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
 
-const invalidCount = count  => count < 1 || isNaN(count)
+const invalidCount = count => count < 1 || isNaN(count);
 
 const parse = function(args) {
   let parsedInput = { option: "n", count: 10, files: args.slice(0) };
@@ -52,7 +53,7 @@ const checkErrors = function(args, userInput) {
   const errorMessage = "head: illegal option -- ";
   const usageMessage = "usage: head [-n lines | -c bytes] [file ...]";
 
-  if (isTypeAndCount(args[0],userInput.files[0])) {
+  if (isTypeAndCount(args[0], userInput.files[0])) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
   if (invalidCount(userInput.count)) {
@@ -67,9 +68,9 @@ const getContents = function(fileSystem, userInput, file) {
     return "head: " + file + ": No such file or directory";
   }
   let contents = fileSystem.readFileSync(file, "utf8");
-   let requiredContents = getNBytes(contents,userInput.count);
-  if(userInput.option == "n") {
-    requiredContents = getNLines(contents,userInput.count);
+  let requiredContents = getNBytes(contents, userInput.count);
+  if (userInput.option == "n") {
+    requiredContents = getNLines(contents, userInput.count);
   }
 
   if (userInput.files.length == 1) {
@@ -81,7 +82,7 @@ const getContents = function(fileSystem, userInput, file) {
 const head = function(args, fileSystem) {
   let userInput = parse(args);
   let error = checkErrors(args, userInput);
-  if(error) return error;
+  if (error) return error;
   let formatContents = getContents.bind(null, fileSystem, userInput);
   let formattedContents = userInput.files.map(formatContents);
   return formattedContents.join("\n\n");
