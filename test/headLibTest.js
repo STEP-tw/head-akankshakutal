@@ -11,7 +11,7 @@ const {
   head,
   getNBytes,
   isNumber,
-  isTypeAndCount,
+  isNotTypeAndCount,
   isNotEqual,
   isOnlyType,
   isValidOption,
@@ -174,11 +174,6 @@ describe("head", function() {
   });
 });
 
-
-
-
-
-
 describe("isNumber", function() {
   it("it Should return null if suplied argument is not number", function() {
     assert.deepEqual(isNumber("aa"), null);
@@ -225,3 +220,37 @@ describe("isValidOption", function() {
     assert.deepEqual(isValidOption("-n4"), ["-n4"]);
   });
 });
+
+describe("invalidCount", function() {
+  it("it should return false if argument is 1", function() {
+    assert.deepEqual(invalidCount(1), false);
+  });
+  it("should return true if argument is string", function() {
+    assert.deepEqual(invalidCount("abc"), true);
+  });
+  it("should return true if argument is less than 1", function() {
+    assert.deepEqual(invalidCount("-8"), true);
+  });
+});
+
+describe("isNotTypeAndCount", function() {
+  it("it should return false if argument is type and count", function() {
+    assert.deepEqual(isNotTypeAndCount("-n5"), false);
+  });
+  it("should return true if argument is only number", function() {
+    assert.deepEqual(isNotTypeAndCount("-4"), false);
+  });
+  it("should return true if argument is only type letter", function() {
+    assert.deepEqual(isNotTypeAndCount("-t"), true);
+  });
+});
+
+describe("isNotEqual", function() {
+  it("it should return true if arguments are same", function() {
+    assert.deepEqual(isNotEqual("-n","-n"), false);
+  });
+  it("should return false if arguments are not same", function() {
+    assert.deepEqual(isNotEqual("-n","n"), true);
+  });
+});
+

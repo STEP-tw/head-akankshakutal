@@ -29,7 +29,7 @@ const isNotEqual = function(x, y) {
   return x != y;
 }
 
-const isTypeAndCount = function (x, y) {
+const isNotTypeAndCount = function (x, y) {
   return !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
 }
 
@@ -66,7 +66,7 @@ const checkErrors = function(args, userInput) {
   const errorMessage = "head: illegal option -- ";
   const usageMessage = "usage: head [-n lines | -c bytes] [file ...]";
 
-  if (isTypeAndCount(args[0], userInput.files[0])) {
+  if (isNotTypeAndCount(args[0], userInput.files[0])) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
   if (invalidCount(userInput.count)) {
@@ -110,7 +110,7 @@ module.exports = {
   checkErrors,
   getNBytes,
   isNumber,
-  isTypeAndCount,
+  isNotTypeAndCount,
   isValidOption,
   isOnlyType,
   isNotEqual,
