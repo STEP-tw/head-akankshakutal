@@ -54,7 +54,7 @@ const isValid = function(args, userInput, fileSystem) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
   if (userInput.count < 1 || isNaN(userInput.count)) {
-    return userInput.option == getNBytes
+    return userInput.option == "c"
       ? invalidByteCount + userInput.count
       : invalidLineCount + userInput.count;
   }
