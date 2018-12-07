@@ -9,33 +9,33 @@ const getNBytes = function(contents, numOfBytes = 10) {
   return contents.slice(0, numOfBytes);
 };
 
-const isNumber = function (value) {
+const isNumber = function(value) {
   return value.match(/^-[0-9]/g);
-}
+};
 
-const isValidType = function (value) {
+const isValidType = function(value) {
   return value.match(/^-[nc]/g);
-}
+};
 
-const isOnlyType = function (value) {
+const isOnlyType = function(value) {
   return value.match(/^-[a-z]/g);
-}
+};
 
-const isValidOption = function (value) {
+const isValidOption = function(value) {
   return value.match(/^-[a-z][0-9]/g);
-}
+};
 
 const isNotEqual = function(x, y) {
   return x != y;
-}
+};
 
-const isNotTypeAndCount = function (x, y) {
+const isNotTypeAndCount = function(x, y) {
   return !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
-}
+};
 
-const invalidCount = function (count) {
+const invalidCount = function(count) {
   return count < 1 || isNaN(count);
-}
+};
 
 const addHeading = function(fileName, content) {
   return "==> " + fileName + " <==\n" + content;

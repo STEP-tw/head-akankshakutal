@@ -181,7 +181,7 @@ describe("isNumber", function() {
   });
 
   it("it should return array if supplied argument is -anyNumber", function() {
-    assert.deepEqual(isNumber("-8"), ['-8']);
+    assert.deepEqual(isNumber("-8"), ["-8"]);
   });
 });
 
@@ -247,10 +247,9 @@ describe("isNotTypeAndCount", function() {
 
 describe("isNotEqual", function() {
   it("it should return true if arguments are same", function() {
-    assert.deepEqual(isNotEqual("-n","-n"), false);
+    assert.deepEqual(isNotEqual("-n", "-n"), false);
   });
   it("should return false if arguments are not same", function() {
-    assert.deepEqual(isNotEqual("-n","n"), true);
+    assert.deepEqual(isNotEqual("-n", "n"), true);
   });
 });
-
