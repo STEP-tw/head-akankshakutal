@@ -65,14 +65,16 @@ const checkErrors = function(args, userInput) {
   const invalidByteCount = "head: illegal byte count -- ";
   const errorMessage = "head: illegal option -- ";
   const usageMessage = "usage: head [-n lines | -c bytes] [file ...]";
+  const errorWord = {
+    n: invalidLineCount,
+    c: invalidByteCount
+  };
 
   if (isNotTypeAndCount(args[0], userInput.files[0])) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
   if (invalidCount(userInput.count)) {
-    return userInput.option == "c"
-      ? invalidByteCount + userInput.count
-      : invalidLineCount + userInput.count;
+    return errorWord[userInput.option]+userInput.count;
   }
 };
 
