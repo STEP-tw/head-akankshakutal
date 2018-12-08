@@ -5,6 +5,7 @@ const {
   select,
   getCount,
   getFileNames,
+  createObject,
   parse,
   checkErrors,
   addHeading,
@@ -66,6 +67,16 @@ describe("getNBytes", function() {
     let contents = "";
     let expectedOutput = "";
     assert.equal(getNBytes(contents, 5), expectedOutput);
+  });
+});
+
+describe("createObject",function() {
+  it("should return object that contains three keys",function() {
+    assert.deepEqual(createObject("n",5,["Hello","Hiii"]),{option : "n",count : 5, files : ["Hello","Hiii"]})
+  });
+
+  it("should return object with undefined when args are not given ",function() { 
+    assert.deepEqual(createObject(),{option : undefined, count : undefined, files : undefined});
   });
 });
 

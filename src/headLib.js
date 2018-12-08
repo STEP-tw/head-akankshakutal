@@ -41,21 +41,20 @@ const addHeading = function(fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
 
+const createObject = function(option,count,files) { 
+  return {option,count,files};
+}
+
 const parse = function(args) {
   let parsedInput = { option: "n", count: 10, files: args.slice(0) };
   if (isOnlyType(args[0])) {
-    parsedInput.option = args[0][1];
-    parsedInput.count = args[1];
-    parsedInput.files = args.slice(2);
+     parsedInput = createObject(args[0][1],args[1],args.slice(2));
   }
   if (isNumber(args[0])) {
-    parsedInput.count = args[0].slice(1);
-    parsedInput.files = args.slice(1);
+    parsedInput = createObject("n",args[0].slice(1),args.slice(1));
   }
   if (isValidOption(args[0])) {
-    parsedInput.option = args[0][1];
-    parsedInput.count = args[0].slice(2);
-    parsedInput.files = args.slice(1);
+    parsedInput = createObject(args[0][1],args[0].slice(2),args.slice(1));
   }
   return parsedInput;
 };
@@ -65,7 +64,7 @@ const checkErrors = function(args, userInput) {
   const invalidByteCount = "head: illegal byte count -- ";
   const errorMessage = "head: illegal option -- ";
   const usageMessage = "usage: head [-n lines | -c bytes] [file ...]";
-  const errorWord = {
+  const errorStatments = {
     n: invalidLineCount,
     c: invalidByteCount
   };
@@ -74,7 +73,7 @@ const checkErrors = function(args, userInput) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
   if (invalidCount(userInput.count)) {
-    return errorWord[userInput.option]+userInput.count;
+    return errorStatments[userInput.option]+userInput.count;
   }
 };
 
@@ -106,6 +105,7 @@ const head = function(args, fileSystem) {
 module.exports = {
   head,
   getNLines,
+  createObject,
   parse,
   addHeading,
   getContents,
