@@ -2,13 +2,9 @@ const assert = require("assert");
 const {
   getNLines,
   getContents,
-  select,
-  getCount,
-  getFileNames,
   createObject,
   parse,
   checkErrors,
-  addHeading,
   head,
   getNBytes,
   isNumber,
