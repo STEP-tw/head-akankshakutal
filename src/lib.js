@@ -68,7 +68,7 @@ const parse = function (args) {
   return parsedInput;
 };
 
-const checkErrors = function (args, userInput) {
+const checkErrors = function (args, userInput, context) {
   const invalidLineCount = "head: illegal line count -- ";
   const invalidByteCount = "head: illegal byte count -- ";
   const errorMessage = "head: illegal option -- ";
@@ -77,7 +77,9 @@ const checkErrors = function (args, userInput) {
     n: invalidLineCount,
     c: invalidByteCount
   };
-
+  if(context.match(/tail\.js/) && isNaN(userInput.count)) {
+    return "tail: illegal offset -- " + userInput.count;
+  }
   if (isNotTypeAndCount(args[0], userInput.files[0])) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
@@ -88,14 +90,13 @@ const checkErrors = function (args, userInput) {
 
 const getContents = function (fileSystem, userInput, context, file) {
   if (!fileSystem.existsSync(file)) {
-    return "head: " + file + ": No such file or directory";
+    return context.match(/....\.js/).join("").slice(0,4) + ": " + file + ": No such file or directory";
   }
   let contents = fileSystem.readFileSync(file, "utf8");
   let requiredContents = getNBytes(contents, context, userInput.count);
   if (userInput.option == "n") {
     requiredContents = getNLines(contents, context, userInput.count);
   }
-
   if (userInput.files.length == 1) {
     return requiredContents;
   }
@@ -104,9 +105,9 @@ const getContents = function (fileSystem, userInput, context, file) {
 
 const getFilteredContents = function (args, fileSystem, context) {
   let userInput = parse(args);
-  let error = checkErrors(args, userInput);
+  let error = checkErrors(args, userInput, context);
   if (error) return error;
-  let formatContents = getContents.bind(null, fileSystem, userInput, context);
+  let formatContents = getContents.bind(null, fileSystem, userInput,context) ;
   let formattedContents = userInput.files.map(formatContents);
   return formattedContents.join("\n\n");
 };
