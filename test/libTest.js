@@ -152,7 +152,7 @@ describe("getContents", function() {
 
   it("should return error message file does not exists when context is tail.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
-    let expectedOutput = "head: file1: No such file or directory";
+    let expectedOutput = "tail: file1: No such file or directory";
     assert.equal(getContents(fileSystem, userInput, "tail.js", "file1"), expectedOutput);
   });
 
@@ -182,19 +182,24 @@ describe("checkErrors", function() {
   let userInput = { option: "n", count: "1", files: ["file1"] };
 
   it("should return error message with usage message when option is invalid", function() {
-    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput =
-      "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
+    let expectedOutput = "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
     let args = ["-v", "file1"];
-    assert.equal(checkErrors(args, userInput), expectedOutput);
+    assert.equal(checkErrors(args, userInput, "head.js"), expectedOutput);
   });
+  it("should return error message when count is invalid", function() {
+    let userInput = { option: "n", count: "5x", files: ["file1"] };
+    let expectedOutput = "tail: illegal offset -- 5x";
+    let args = ["-n5x", "file1"];
+    assert.equal(checkErrors(args, userInput, "tail.js"), expectedOutput);
+  });
+
 });
 
 describe("getFilteredContents", function() {
   it("should return error message when input contains count as 0 ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: illegal line count -- 0";
-    assert.deepEqual(getFilteredContents(["-n0", "File1", "head.js"], fileSystem), expectedOutput);
+    assert.deepEqual(getFilteredContents(["-n0", "File1", "head.js"], fileSystem, "head.js"), expectedOutput);
   });
 
   it("should return error message when input file is not present ", function() {
