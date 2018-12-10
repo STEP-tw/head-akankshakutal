@@ -5,7 +5,7 @@ const {
   createObject,
   parse,
   checkErrors,
-  head,
+  getFilteredContents,
   getNBytes,
   isNumber,
   isNotTypeAndCount,
@@ -190,29 +190,29 @@ describe("checkErrors", function() {
   });
 });
 
-describe("head", function() {
+describe("getFilteredContents", function() {
   it("should return error message when input contains count as 0 ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: illegal line count -- 0";
-    assert.deepEqual(head(["-n0", "File1", "head.js"], fileSystem), expectedOutput);
+    assert.deepEqual(getFilteredContents(["-n0", "File1", "head.js"], fileSystem), expectedOutput);
   });
 
   it("should return error message when input file is not present ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "head: illegal line count -- File2";
-    assert.deepEqual(head(["-n", "File2"], fileSystem, "head.js"), expectedOutput);
+    assert.deepEqual(getFilteredContents(["-n", "File2"], fileSystem, "head.js"), expectedOutput);
   });
 
   it("should return error message when input contains invalid file ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: File1: No such file or directory";
-    assert.deepEqual(head(["-n", "5", "File1"], fileSystem, "head.js"), expectedOutput);
+    assert.deepEqual(getFilteredContents(["-n", "5", "File1"], fileSystem, "head.js"), expectedOutput);
   });
   
   it("should return Hello message when all inputs are valid ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.deepEqual(head(["File1"], fileSystem, "head.js"), expectedOutput);
+    assert.deepEqual(getFilteredContents(["File1"], fileSystem, "head.js"), expectedOutput);
   });
 });
 

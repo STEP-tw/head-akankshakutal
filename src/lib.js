@@ -102,7 +102,7 @@ const getContents = function (fileSystem, userInput, context, file) {
   return addHeading(file, requiredContents);
 };
 
-const head = function (args, fileSystem, context) {
+const getFilteredContents = function (args, fileSystem, context) {
   let userInput = parse(args);
   let error = checkErrors(args, userInput);
   if (error) return error;
@@ -112,7 +112,7 @@ const head = function (args, fileSystem, context) {
 };
 
 module.exports = {
-  head,
+  getFilteredContents,
   getNLines,
   createObject,
   parse,
