@@ -1,65 +1,74 @@
-const getNLines = function(content, numOfLines = 10) {
+const getNLines = function (content,context, numOfLines = 10) {
+  if (context.match(/tail\.js/)) {
+    return content
+      .split('\n')
+      .slice(content.split('\n').length - numOfLines)
+      .join('\n');
+  }
   return content
     .split("\n")
     .slice(0, numOfLines)
     .join("\n");
 };
 
-const getNBytes = function(contents, numOfBytes = 10) {
-  return contents.slice(0, numOfBytes);
+const getNBytes = function (content, context, numOfBytes = 10) {
+  if (context.match(/tail\.js/)) {
+    return content.slice(content.length - numOfBytes);
+  }
+  return content.slice(0, numOfBytes);
 };
 
-const isNumber = function(value) {
+const isNumber = function (value) {
   return value.match(/^-[0-9]/g);
 };
 
-const isValidType = function(value) {
+const isValidType = function (value) {
   return value.match(/^-[nc]/g);
 };
 
-const isOnlyType = function(value) {
+const isOnlyType = function (value) {
   return value.match(/^-[a-z]/g);
 };
 
-const isValidOption = function(value) {
+const isValidOption = function (value) {
   return value.match(/^-[a-z][0-9]/g);
 };
 
-const isNotEqual = function(x, y) {
+const isNotEqual = function (x, y) {
   return x != y;
 };
 
-const isNotTypeAndCount = function(x, y) {
+const isNotTypeAndCount = function (x, y) {
   return !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
 };
 
-const invalidCount = function(count) {
+const invalidCount = function (count) {
   return count < 1 || isNaN(count);
 };
 
-const addHeading = function(fileName, content) {
+const addHeading = function (fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
 
-const createObject = function(option,count,files) { 
-  return {option,count,files};
+const createObject = function (option, count, files) {
+  return { option, count, files };
 }
 
-const parse = function(args) {
+const parse = function (args) {
   let parsedInput = { option: "n", count: 10, files: args.slice(0) };
   if (isOnlyType(args[0])) {
-     parsedInput = createObject(args[0][1],args[1],args.slice(2));
+    parsedInput = createObject(args[0][1], args[1], args.slice(2));
   }
   if (isNumber(args[0])) {
-    parsedInput = createObject("n",args[0].slice(1),args.slice(1));
+    parsedInput = createObject("n", args[0].slice(1), args.slice(1));
   }
   if (isValidOption(args[0])) {
-    parsedInput = createObject(args[0][1],args[0].slice(2),args.slice(1));
+    parsedInput = createObject(args[0][1], args[0].slice(2), args.slice(1));
   }
   return parsedInput;
 };
 
-const checkErrors = function(args, userInput) {
+const checkErrors = function (args, userInput) {
   const invalidLineCount = "head: illegal line count -- ";
   const invalidByteCount = "head: illegal byte count -- ";
   const errorMessage = "head: illegal option -- ";
@@ -73,18 +82,18 @@ const checkErrors = function(args, userInput) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
   if (invalidCount(userInput.count)) {
-    return errorStatments[userInput.option]+userInput.count;
+    return errorStatments[userInput.option] + userInput.count;
   }
 };
 
-const getContents = function(fileSystem, userInput, file) {
+const getContents = function (fileSystem, userInput, context, file) {
   if (!fileSystem.existsSync(file)) {
     return "head: " + file + ": No such file or directory";
   }
   let contents = fileSystem.readFileSync(file, "utf8");
-  let requiredContents = getNBytes(contents, userInput.count);
+  let requiredContents = getNBytes(contents, context, userInput.count);
   if (userInput.option == "n") {
-    requiredContents = getNLines(contents, userInput.count);
+    requiredContents = getNLines(contents, context, userInput.count);
   }
 
   if (userInput.files.length == 1) {
@@ -93,11 +102,11 @@ const getContents = function(fileSystem, userInput, file) {
   return addHeading(file, requiredContents);
 };
 
-const head = function(args, fileSystem) {
+const head = function (args, fileSystem, context) {
   let userInput = parse(args);
   let error = checkErrors(args, userInput);
   if (error) return error;
-  let formatContents = getContents.bind(null, fileSystem, userInput);
+  let formatContents = getContents.bind(null, fileSystem, userInput, context);
   let formattedContents = userInput.files.map(formatContents);
   return formattedContents.join("\n\n");
 };
@@ -119,3 +128,5 @@ module.exports = {
   isValidType,
   invalidCount
 };
+
+

@@ -19,50 +19,71 @@ const {
 describe("getNLines", function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
 
-  it("should return 10 lines when number of lines is not specified ", function() {
+  it("should return first 10 lines when number of lines is not specified and context is head.js", function() {
     let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST";
-    assert.equal(getNLines(contents), expectedOutput);
+    assert.equal(getNLines(contents,"head.js"), expectedOutput);
   });
 
-  it("should return specified number of lines when number of lines is given ", function() {
+  it("should return last 10 lines when number of line is not specified and context is tail.js", function() {
+    let expectedOutput = "GH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
+    assert.equal(getNLines(contents, "tail.js"), expectedOutput);
+  });
+
+  it("should return last 3 lines when number of lines is 3 and context is tail.js ", function() {
+    let expectedOutput = "UV\nWX\nYZ";
+    assert.equal(getNLines(contents, "tail.js", 3), expectedOutput);
+  });
+
+  it("should return first 3 lines when number of lines is 3 and context is head.js ", function() {
     let expectedOutput = "AB\nCD\nEF";
-    assert.equal(getNLines(contents, 3), expectedOutput);
+    assert.equal(getNLines(contents, "head.js", 3), expectedOutput);
   });
 
   it("should return empty string when number of line is 0", function() {
     let expectedOutput = "";
-    assert.equal(getNLines(contents, 0), expectedOutput);
+    assert.equal(getNLines(contents, "head.js", 0), expectedOutput);
   });
 
   it("should return empty string when contents is empty string ", function() {
     let contents = "";
     let expectedOutput = "";
-    assert.equal(getNLines(contents, 5), expectedOutput);
+    assert.equal(getNLines(contents,"head.js", 5), expectedOutput);
   });
+
 });
 
 describe("getNBytes", function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
 
-  it("should return 10 bytes/characters when number of bytes is not specified", function() {
+  it("should return first 10 bytes/characters when number of bytes is not specified and context is head.js", function() {
     let expectedOutput = "AB\nCD\nEF\nG";
-    assert.equal(getNBytes(contents), expectedOutput);
+    assert.equal(getNBytes(contents,"head.js"), expectedOutput);
   });
 
-  it("should return specified number of bytes when number of bytes is given ", function() {
+  it("should return last 10 bytes/characters when number of bytes is not specified and context is head.js", function() {
+    let expectedOutput = "T\nUV\nWX\nYZ";
+    assert.equal(getNBytes(contents,"tail.js"), expectedOutput);
+  });
+
+  it("should return first 3 bytes when number of bytes is 3 and context is head.js", function() {
     let expectedOutput = "AB\n";
-    assert.equal(getNBytes(contents, 3), expectedOutput);
+    assert.equal(getNBytes(contents, "head.js", 3), expectedOutput);
+  });
+
+  it("should return 3 bytes when number of bytes is 3 and context is tail.js", function() {
+    let expectedOutput = "\nYZ";
+    assert.equal(getNBytes(contents, "tail.js", 3), expectedOutput);
   });
 
   it("should return empty string when number of bytes is 0", function() {
     let expectedOutput = "";
-    assert.equal(getNBytes(contents, 0), expectedOutput);
+    assert.equal(getNBytes(contents, "head.js", 0), expectedOutput);
   });
 
   it("should return empty string when contents is empty string ", function() {
     let contents = "";
     let expectedOutput = "";
-    assert.equal(getNBytes(contents, 5), expectedOutput);
+    assert.equal(getNBytes(contents,"head.js", 5), expectedOutput);
   });
 });
 
@@ -123,24 +144,38 @@ describe("parse", function() {
 describe("getContents", function() {
   let userInput = { option: "n", count: "1", files: ["file1"] };
 
-  it("should return error message ", function() {
+  it("should return error message file does not exists when context is head.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: file1: No such file or directory";
-    assert.equal(getContents(fileSystem, userInput, "file1"), expectedOutput);
+    assert.equal(getContents(fileSystem, userInput, "head.js", "file1"), expectedOutput);
+  });
+
+  it("should return error message file does not exists when context is tail.js ", function() {
+    let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
+    let expectedOutput = "head: file1: No such file or directory";
+    assert.equal(getContents(fileSystem, userInput, "tail.js", "file1"), expectedOutput);
   });
 
   it("should return Hello because file exists", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.equal(getContents(fileSystem, userInput, "file1"), expectedOutput);
+    assert.equal(getContents(fileSystem, userInput, "head.js", "file1"), expectedOutput);
   });
 
-  it("should return Hello twice because file exists", function() {
+  it("should return first two character when context is head.js ", function() {
     let userInput = { option: "c", count: "2", files: ["file1", "file2"] };
-    let fileSystem = { readFileSync: () => "He", existsSync: () => true };
+    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "==> file1 <==\nHe";
-    assert.equal(getContents(fileSystem, userInput, "file1"), expectedOutput);
+    assert.equal(getContents(fileSystem, userInput, "head.js", "file1"), expectedOutput);
   });
+
+  it("should return last two character when context is tail.js ", function() {
+    let userInput = { option: "c", count: "2", files: ["file1", "file2"] };
+    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
+    let expectedOutput = "==> file1 <==\nlo";
+    assert.equal(getContents(fileSystem, userInput, "tail.js", "file1"), expectedOutput);
+  });
+
 });
 
 describe("checkErrors", function() {
@@ -159,25 +194,25 @@ describe("head", function() {
   it("should return error message when input contains count as 0 ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: illegal line count -- 0";
-    assert.deepEqual(head(["-n0", "File1"], fileSystem), expectedOutput);
+    assert.deepEqual(head(["-n0", "File1", "head.js"], fileSystem), expectedOutput);
   });
 
   it("should return error message when input file is not present ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "head: illegal line count -- File2";
-    assert.deepEqual(head(["-n", "File2"], fileSystem), expectedOutput);
+    assert.deepEqual(head(["-n", "File2"], fileSystem, "head.js"), expectedOutput);
   });
 
   it("should return error message when input contains invalid file ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: File1: No such file or directory";
-    assert.deepEqual(head(["-n", "5", "File1"], fileSystem), expectedOutput);
+    assert.deepEqual(head(["-n", "5", "File1"], fileSystem, "head.js"), expectedOutput);
   });
-
+  
   it("should return Hello message when all inputs are valid ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.deepEqual(head(["File1"], fileSystem), expectedOutput);
+    assert.deepEqual(head(["File1"], fileSystem, "head.js"), expectedOutput);
   });
 });
 
