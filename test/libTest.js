@@ -14,7 +14,7 @@ const {
   isValidOption,
   isValidType,
   invalidCount
-} = require("../src/headLib.js");
+} = require("../src/lib.js");
 
 describe("getNLines", function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
