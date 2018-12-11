@@ -42,8 +42,8 @@ const isNotTypeAndCount = function (x, y) {
   return !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
 };
 
-const invalidCount = function (count) {
-  return count < 1 || isNaN(count);
+const invalidCount = function (count, context) {
+  return context .match(/head\.js/) && (count < 1 || isNaN(count));
 };
 
 const addHeading = function (fileName, content) {
@@ -51,7 +51,7 @@ const addHeading = function (fileName, content) {
 };
 
 const invalidTailCount = function (context, count) {
-   return context.match(/tail\.js/) && isNaN(count);
+   return (context.match(/tail\.js/) && isNaN(count)) || count < 0 ;
 }
 
 const createObject = function (option, count, files) {
@@ -87,7 +87,7 @@ const checkErrors = function (args, userInput, context) {
   if (isNotTypeAndCount(args[0], userInput.files[0])) {
     return errorMessage + args[0].slice(1) + "\n" + usageMessage;
   }
-  if (invalidCount(userInput.count)) {
+  if (invalidCount(userInput.count, context)) {
     return errorStatments[userInput.option] + userInput.count;
   }
 };

@@ -271,13 +271,22 @@ describe("isValidOption", function() {
 
 describe("invalidCount", function() {
   it("it should return false if argument is 1", function() {
-    assert.deepEqual(invalidCount(1), false);
+    assert.deepEqual(invalidCount(1, "head.js"), false);
   });
   it("should return true if argument is string", function() {
-    assert.deepEqual(invalidCount("abc"), true);
+    assert.deepEqual(invalidCount("abc","head.js"), true);
+  });
+  it("should return true if argument is less than 0", function() {
+    assert.deepEqual(invalidCount("-8","head.js"), true);
+  });
+  it("it should return false if argument is 0", function() {
+    assert.deepEqual(invalidCount(0, "head.js"), true);
+  });
+  it("should return null if context is tail.js", function() {
+    assert.deepEqual(invalidCount(-1,"tail.js"), null);
   });
   it("should return true if argument is less than 1", function() {
-    assert.deepEqual(invalidCount("-8"), true);
+    assert.deepEqual(invalidCount("-8","head.js"), true);
   });
 });
 
@@ -303,13 +312,13 @@ describe("isNotEqual", function() {
 });
 
 describe("invalidTailCount", function() {
-  it("it should return false if argument is 1", function() {
+  it("it should return false if argument is 1 and context is tail.js", function() {
     assert.deepEqual(invalidTailCount("tail.js", 1), false);
   });
-  it("should return true if argument is string", function() {
-    assert.deepEqual(invalidTailCount("head.js",5), null);
+  it("should return true if context is head.js", function() {
+    assert.deepEqual(invalidTailCount("head.js",5), false);
   });
-  it("should return true if argument is less than 1", function() {
-    assert.deepEqual(invalidTailCount("tail.js",0), false);
+  it("should return true if argument is less than 0", function() {
+    assert.deepEqual(invalidTailCount("tail.js", -1), true);
   });
 });
