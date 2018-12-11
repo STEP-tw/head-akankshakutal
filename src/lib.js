@@ -50,6 +50,10 @@ const addHeading = function (fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
 
+const invalidTailCount = function (context, count) {
+   return context.match(/tail\.js/) && isNaN(count);
+}
+
 const createObject = function (option, count, files) {
   return { option, count, files };
 }
@@ -77,7 +81,7 @@ const checkErrors = function (args, userInput, context) {
     n: invalidLineCount,
     c: invalidByteCount
   };
-  if(context.match(/tail\.js/) && isNaN(userInput.count)) {
+  if(invalidTailCount(context,userInput.count)) {
     return "tail: illegal offset -- " + userInput.count;
   }
   if (isNotTypeAndCount(args[0], userInput.files[0])) {
@@ -127,7 +131,8 @@ module.exports = {
   isOnlyType,
   isNotEqual,
   isValidType,
-  invalidCount
+  invalidCount,
+  invalidTailCount
 };
 
 

@@ -13,7 +13,8 @@ const {
   isOnlyType,
   isValidOption,
   isValidType,
-  invalidCount
+  invalidCount,
+  invalidTailCount
 } = require("../src/lib.js");
 
 describe("getNLines", function() {
@@ -298,5 +299,17 @@ describe("isNotEqual", function() {
   });
   it("should return false if arguments are not same", function() {
     assert.deepEqual(isNotEqual("-n", "n"), true);
+  });
+});
+
+describe("invalidTailCount", function() {
+  it("it should return false if argument is 1", function() {
+    assert.deepEqual(invalidTailCount("tail.js", 1), false);
+  });
+  it("should return true if argument is string", function() {
+    assert.deepEqual(invalidTailCount("head.js",5), null);
+  });
+  it("should return true if argument is less than 1", function() {
+    assert.deepEqual(invalidTailCount("tail.js",0), false);
   });
 });
