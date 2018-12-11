@@ -1,8 +1,9 @@
 const getNLines = function (content,context, numOfLines = 10) {
   if (context.match(/tail\.js/)) {
+    numOfLines = Math.max(content.split('\n').length - numOfLines,0);
     return content
       .split('\n')
-      .slice(content.split('\n').length - numOfLines)
+      .slice(numOfLines)
       .join('\n');
   }
   return content
