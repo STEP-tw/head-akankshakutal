@@ -1,10 +1,10 @@
-const getNLines = function (content,context, numOfLines = 10) {
+const getNLines = function(content, context, numOfLines = 10) {
   if (context.match(/tail\.js/)) {
-    numOfLines = Math.max(content.split('\n').length - numOfLines,0);
+    numOfLines = Math.max(content.split("\n").length - numOfLines, 0);
     return content
-      .split('\n')
+      .split("\n")
       .slice(numOfLines)
-      .join('\n');
+      .join("\n");
   }
   return content
     .split("\n")
@@ -12,54 +12,54 @@ const getNLines = function (content,context, numOfLines = 10) {
     .join("\n");
 };
 
-const getNBytes = function (content, context, numOfBytes = 10) {
+const getNBytes = function(content, context, numOfBytes = 10) {
   if (context.match(/tail\.js/)) {
     return content.slice(content.length - numOfBytes);
   }
   return content.slice(0, numOfBytes);
 };
 
-const isNumber = function (value) {
+const isNumber = function(value) {
   return value.match(/^-[0-9]/g);
 };
 
-const isValidType = function (value) {
+const isValidType = function(value) {
   return value.match(/^-[nc]/g);
 };
 
-const isOnlyType = function (value) {
+const isOnlyType = function(value) {
   return value.match(/^-[a-z]/g);
 };
 
-const isValidOption = function (value) {
+const isValidOption = function(value) {
   return value.match(/^-[a-z][0-9]/g);
 };
 
-const isNotEqual = function (x, y) {
+const isNotEqual = function(x, y) {
   return x != y;
 };
 
-const isNotTypeAndCount = function (x, y) {
+const isNotTypeAndCount = function(x, y) {
   return !isValidType(x) && isNotEqual(x, y) && !isNumber(x);
 };
 
-const invalidCount = function (count, context) {
-  return context .match(/head\.js/) && (count < 1 || isNaN(count));
+const invalidCount = function(count, context) {
+  return context.match(/head\.js/) && (count < 1 || isNaN(count));
 };
 
-const addHeading = function (fileName, content) {
+const addHeading = function(fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
 
-const invalidTailCount = function (context, count) {
-   return (context.match(/tail\.js/) && isNaN(count)) || count < 0 ;
-}
+const invalidTailCount = function(context, count) {
+  return (context.match(/tail\.js/) && isNaN(count)) || count < 0;
+};
 
-const createObject = function (option, count, files) {
+const createObject = function(option, count, files) {
   return { option, count, files };
-}
+};
 
-const parse = function (args) {
+const parse = function(args) {
   let parsedInput = { option: "n", count: 10, files: args.slice(0) };
   if (isOnlyType(args[0])) {
     parsedInput = createObject(args[0][1], args[1], args.slice(2));
@@ -73,7 +73,7 @@ const parse = function (args) {
   return parsedInput;
 };
 
-const checkErrors = function (args, userInput, context) {
+const checkErrors = function(args, userInput, context) {
   const invalidLineCount = "head: illegal line count -- ";
   const invalidByteCount = "head: illegal byte count -- ";
   const errorMessage = "head: illegal option -- ";
@@ -82,7 +82,7 @@ const checkErrors = function (args, userInput, context) {
     n: invalidLineCount,
     c: invalidByteCount
   };
-  if(invalidTailCount(context,userInput.count)) {
+  if (invalidTailCount(context, userInput.count)) {
     return "tail: illegal offset -- " + userInput.count;
   }
   if (isNotTypeAndCount(args[0], userInput.files[0])) {
@@ -93,9 +93,17 @@ const checkErrors = function (args, userInput, context) {
   }
 };
 
-const getContents = function (fileSystem, userInput, context, file) {
+const getContents = function(fileSystem, userInput, context, file) {
   if (!fileSystem.existsSync(file)) {
-    return context.match(/....\.js/).join("").slice(0,4) + ": " + file + ": No such file or directory";
+    return (
+      context
+        .match(/....\.js/)
+        .join("")
+        .slice(0, 4) +
+      ": " +
+      file +
+      ": No such file or directory"
+    );
   }
   let contents = fileSystem.readFileSync(file, "utf8");
   let requiredContents = getNBytes(contents, context, userInput.count);
@@ -108,11 +116,11 @@ const getContents = function (fileSystem, userInput, context, file) {
   return addHeading(file, requiredContents);
 };
 
-const getFilteredContents = function (args, fileSystem, context) {
+const getFilteredContents = function(args, fileSystem, context) {
   let userInput = parse(args);
   let error = checkErrors(args, userInput, context);
   if (error) return error;
-  let formatContents = getContents.bind(null, fileSystem, userInput,context) ;
+  let formatContents = getContents.bind(null, fileSystem, userInput, context);
   let formattedContents = userInput.files.map(formatContents);
   return formattedContents.join("\n\n");
 };
@@ -135,5 +143,3 @@ module.exports = {
   invalidCount,
   invalidTailCount
 };
-
-
