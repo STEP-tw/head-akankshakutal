@@ -1,4 +1,5 @@
 const getNLines = function(content, range) {
+  if (range[0] === 0) return "";
   return content
     .split("\n")
     .slice(range[0], range[1])
@@ -6,6 +7,7 @@ const getNLines = function(content, range) {
 };
 
 const getNBytes = function(content, range) {
+  if (range[0] === 0) return "";
   return content.slice(range[0], range[1]);
 };
 
@@ -105,6 +107,8 @@ const formatContents = function(files, content, index) {
 
 const getFilteredContents = function(args, fileSystem, operation) {
   let userInput = parse(args);
+  console.log(userInput);
+
   let context = operation
     .match(/....\.js/)
     .join("")
