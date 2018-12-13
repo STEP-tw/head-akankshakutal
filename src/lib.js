@@ -1,5 +1,4 @@
 const getNLines = function(content, range) {
-  if (range[0] === 0 && range[1] == undefined) return "";
   return content
     .split("\n")
     .slice(range[0], range[1])
@@ -7,7 +6,6 @@ const getNLines = function(content, range) {
 };
 
 const getNBytes = function(content, range) {
-  if (range[0] === 0 && range[1] == undefined) return "";
   return content.slice(range[0], range[1]);
 };
 
