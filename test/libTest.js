@@ -8,7 +8,7 @@ const {
   createObject,
   parse,
   checkErrors,
-  head,
+  getFilteredContents,
   getNBytes,
   isNumber,
   isNotTypeAndCount,
@@ -178,12 +178,12 @@ describe("checkErrors", function() {
   });
 });
 
-describe("head", function() {
+describe("getFilteredContents", function() {
   it("should return error message when input contains count as 0 ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: illegal line count -- 0";
     assert.deepEqual(
-      head(["-n0", "File1", "head.js"], fileSystem, "head.js"),
+      getFilteredContents(["-n0", "File1", "head.js"], fileSystem, "head.js"),
       expectedOutput
     );
   });
@@ -192,7 +192,7 @@ describe("head", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "head: illegal line count -- File2";
     assert.deepEqual(
-      head(["-n", "File2"], fileSystem, "head.js"),
+      getFilteredContents(["-n", "File2"], fileSystem, "head.js"),
       expectedOutput
     );
   });
@@ -201,7 +201,7 @@ describe("head", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: File1: No such file or directory";
     assert.deepEqual(
-      head(["-n", "5", "File1"], fileSystem, "head.js"),
+      getFilteredContents(["-n", "5", "File1"], fileSystem, "head.js"),
       expectedOutput
     );
   });
@@ -209,20 +209,26 @@ describe("head", function() {
   it("should return Hello message when all inputs are valid ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.deepEqual(head(["File1"], fileSystem, "head.js"), expectedOutput);
+    assert.deepEqual(
+      getFilteredContents(["File1"], fileSystem, "head.js"),
+      expectedOutput
+    );
   });
 
   it("should return lo message when operation is tail and option is c ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.deepEqual(head(["File1"], fileSystem, "tail.js"), expectedOutput);
+    assert.deepEqual(
+      getFilteredContents(["File1"], fileSystem, "tail.js"),
+      expectedOutput
+    );
   });
 
   it("should return contents with heading when files are more than 1", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "==> File1 <==\nHello\n\n==> File2 <==\nHello";
     assert.deepEqual(
-      head(["File1", "File2"], fileSystem, "tail.js"),
+      getFilteredContents(["File1", "File2"], fileSystem, "tail.js"),
       expectedOutput
     );
   });

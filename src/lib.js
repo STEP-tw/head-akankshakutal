@@ -103,7 +103,7 @@ const formatContents = function(files, content, index) {
   return addHeading(files[index], content);
 };
 
-const head = function(args, fileSystem, operation) {
+const getFilteredContents = function(args, fileSystem, operation) {
   let userInput = parse(args);
   let context = operation
     .match(/....\.js/)
@@ -129,7 +129,7 @@ const head = function(args, fileSystem, operation) {
 };
 
 module.exports = {
-  head,
+  getFilteredContents,
   getNLines,
   createObject,
   parse,
