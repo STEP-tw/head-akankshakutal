@@ -93,7 +93,7 @@ const checkErrors = function(args, userInput, context) {
   }
 };
 
-const getContents = function(fileSystem, userInput, context, file) {
+const getContents = function(fileSystem, context, file) {
   if (!fileSystem.existsSync(file)) {
     return (
       context
@@ -106,22 +106,35 @@ const getContents = function(fileSystem, userInput, context, file) {
     );
   }
   let contents = fileSystem.readFileSync(file, "utf8");
-  let requiredContents = getNBytes(contents, context, userInput.count);
+  return contents;
+};
+
+const getRequiredContents = function(userInput, context, contents) {
   if (userInput.option == "n") {
-    requiredContents = getNLines(contents, context, userInput.count);
+    return getNLines(contents, context, userInput.count);
   }
-  if (userInput.files.length == 1) {
-    return requiredContents;
-  }
-  return addHeading(file, requiredContents);
+  return getNBytes(contents, context, userInput.count);
+};
+
+const formatContents = function(files, content, index) {
+  if (content.match(/: No such file or directory/)) return content;
+  return addHeading(files[index], content);
 };
 
 const head = function(args, fileSystem, context) {
   let userInput = parse(args);
   let error = checkErrors(args, userInput, context);
   if (error) return error;
-  let formatContents = getContents.bind(null, fileSystem, userInput, context);
-  let formattedContents = userInput.files.map(formatContents);
+  let contents = userInput.files.map(
+    getContents.bind(null, fileSystem, context)
+  );
+  let requiredContents = contents.map(
+    getRequiredContents.bind(null, userInput, context)
+  );
+  if (requiredContents.length == 1) return requiredContents.join("\n\n");
+  let formattedContents = requiredContents.map(
+    formatContents.bind(null, userInput.files)
+  );
   return formattedContents.join("\n\n");
 };
 
@@ -132,6 +145,8 @@ module.exports = {
   parse,
   addHeading,
   getContents,
+  getRequiredContents,
+  formatContents,
   checkErrors,
   getNBytes,
   isNumber,

@@ -1,7 +1,10 @@
 const assert = require("assert");
 const {
   getNLines,
+  addHeading,
+  getRequiredContents,
   getContents,
+  formatContents,
   createObject,
   parse,
   checkErrors,
@@ -155,48 +158,25 @@ describe("getContents", function() {
   it("should return error message file does not exists when context is head.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: file1: No such file or directory";
-    assert.equal(
-      getContents(fileSystem, userInput, "head.js", "file1"),
-      expectedOutput
-    );
+    assert.equal(getContents(fileSystem, "head.js", "file1"), expectedOutput);
   });
 
   it("should return error message file does not exists when context is tail.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "tail: file1: No such file or directory";
-    assert.equal(
-      getContents(fileSystem, userInput, "tail.js", "file1"),
-      expectedOutput
-    );
+    assert.equal(getContents(fileSystem, "tail.js", "file1"), expectedOutput);
   });
 
   it("should return Hello because file exists", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.equal(
-      getContents(fileSystem, userInput, "head.js", "file1"),
-      expectedOutput
-    );
+    assert.equal(getContents(fileSystem, "head.js", "file1"), expectedOutput);
   });
 
-  it("should return first two character when context is head.js ", function() {
-    let userInput = { option: "c", count: "2", files: ["file1", "file2"] };
+  it("should return Hello when context is tail.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = "==> file1 <==\nHe";
-    assert.equal(
-      getContents(fileSystem, userInput, "head.js", "file1"),
-      expectedOutput
-    );
-  });
-
-  it("should return last two character when context is tail.js ", function() {
-    let userInput = { option: "c", count: "2", files: ["file1", "file2"] };
-    let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
-    let expectedOutput = "==> file1 <==\nlo";
-    assert.equal(
-      getContents(fileSystem, userInput, "tail.js", "file1"),
-      expectedOutput
-    );
+    let expectedOutput = "Hello";
+    assert.equal(getContents(fileSystem, "tail.js", "file1"), expectedOutput);
   });
 });
 
@@ -217,7 +197,7 @@ describe("checkErrors", function() {
   });
 });
 
-describe("getFilteredContents", function() {
+describe("head", function() {
   it("should return error message when input contains count as 0 ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: illegal line count -- 0";
@@ -227,7 +207,7 @@ describe("getFilteredContents", function() {
     );
   });
 
-  it("should return error message when input file is not present ", function() {
+  it("should return error message when count is invalid ", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "head: illegal line count -- File2";
     assert.deepEqual(
@@ -249,6 +229,61 @@ describe("getFilteredContents", function() {
     const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
     assert.deepEqual(head(["File1"], fileSystem, "head.js"), expectedOutput);
+  });
+});
+
+describe("getRequiredContents", function() {
+  it("should return first 2 character if context is head.js", function() {
+    let userInput = { option: "c", count: "2", files: ["file1"] };
+    assert.deepEqual(getRequiredContents(userInput, "head.js", "Hello"), "He");
+  });
+
+  it("should return first 2 lines if context is head.js", function() {
+    let userInput = { option: "n", count: "2", files: ["file1"] };
+    let expectedOutput = "1\n2";
+    let fileData = "1\n2\n3\n4";
+    assert.deepEqual(
+      getRequiredContents(userInput, "head.js", fileData),
+      expectedOutput
+    );
+  });
+
+  it("should return last 2 characters if context is tail.js", function() {
+    let userInput = { option: "c", count: "2", files: ["file1"] };
+    assert.deepEqual(getRequiredContents(userInput, "tail.js", "Hello"), "lo");
+  });
+
+  it("should return last 2 lines if context is head.js", function() {
+    let userInput = { option: "n", count: "2", files: ["file1"] };
+    let fileData = "1\n2\n3\n4\n5";
+    let expectedOutput = "4\n5";
+    assert.deepEqual(
+      getRequiredContents(userInput, "tail.js", fileData),
+      expectedOutput
+    );
+  });
+});
+
+describe("formatContents", function() {
+  it("should return contents as it is if it is an error message", function() {
+    let expectedOutput = "head: File1: No such file or directory";
+    let fileNames = ["File1", "File2"];
+    let content = "head: File1: No such file or directory";
+    assert.deepEqual(formatContents(fileNames, content, 1), expectedOutput);
+  });
+
+  it("should return contents with heading", function() {
+    let expectedOutput = "==> File2 <==\nHello";
+    let fileNames = ["File1", "File2"];
+    let content = "Hello";
+    assert.deepEqual(formatContents(fileNames, content, 1), expectedOutput);
+  });
+});
+
+describe("addHeading", function() {
+  it("should return contents with heading", function() {
+    let expectedOutput = "==> File1 <==\nHello";
+    assert.equal(addHeading("File1", "Hello"), expectedOutput);
   });
 });
 
