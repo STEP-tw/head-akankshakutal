@@ -116,7 +116,7 @@ const getContents = function(fileSystem, userInput, context, file) {
   return addHeading(file, requiredContents);
 };
 
-const getFilteredContents = function(args, fileSystem, context) {
+const head = function(args, fileSystem, context) {
   let userInput = parse(args);
   let error = checkErrors(args, userInput, context);
   if (error) return error;
@@ -126,7 +126,7 @@ const getFilteredContents = function(args, fileSystem, context) {
 };
 
 module.exports = {
-  getFilteredContents,
+  head,
   getNLines,
   createObject,
   parse,
