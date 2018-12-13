@@ -107,8 +107,6 @@ const formatContents = function(files, content, index) {
 
 const getFilteredContents = function(args, fileSystem, operation) {
   let userInput = parse(args);
-  console.log(userInput);
-
   let context = operation
     .match(/....\.js/)
     .join("")
