@@ -21,72 +21,53 @@ const {
 } = require("../src/lib.js");
 
 describe("getNLines", function() {
-  let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
-
-  it("should return first 10 lines when number of lines is not specified and context is head.js", function() {
+  it("should return first 10 lines when range is 0-10", function() {
+    let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
     let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST";
-    assert.equal(getNLines(contents, "head.js"), expectedOutput);
+    assert.equal(getNLines(contents, [0, 10]), expectedOutput);
   });
 
-  it("should return last 10 lines when number of line is not specified and context is tail.js", function() {
+  it("should return last 10 lines when range contains only -10", function() {
+    let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
     let expectedOutput = "GH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
-    assert.equal(getNLines(contents, "tail.js"), expectedOutput);
+    assert.equal(getNLines(contents, [-10]), expectedOutput);
   });
 
-  it("should return last 3 lines when number of lines is 3 and context is tail.js ", function() {
-    let expectedOutput = "UV\nWX\nYZ";
-    assert.equal(getNLines(contents, "tail.js", 3), expectedOutput);
-  });
-
-  it("should return first 3 lines when number of lines is 3 and context is head.js ", function() {
-    let expectedOutput = "AB\nCD\nEF";
-    assert.equal(getNLines(contents, "head.js", 3), expectedOutput);
-  });
-
-  it("should return empty string when number of line is 0", function() {
-    let expectedOutput = "";
-    assert.equal(getNLines(contents, "head.js", 0), expectedOutput);
-  });
-
-  it("should return empty string when contents is empty string ", function() {
+  it("should return empty string when contents are empty", function() {
     let contents = "";
     let expectedOutput = "";
-    assert.equal(getNLines(contents, "head.js", 5), expectedOutput);
+    assert.equal(getNLines(contents, [0, 5]), expectedOutput);
+  });
+
+  it("should return whole contents when range is empty ", function() {
+    let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
+    let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
+    assert.equal(getNLines(contents, []), expectedOutput);
   });
 });
 
 describe("getNBytes", function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
 
-  it("should return first 10 bytes/characters when number of bytes is not specified and context is head.js", function() {
+  it("should return first 10 bytes/characters when range is 0-10", function() {
     let expectedOutput = "AB\nCD\nEF\nG";
-    assert.equal(getNBytes(contents, "head.js"), expectedOutput);
+    assert.equal(getNBytes(contents, [0, 10]), expectedOutput);
   });
 
-  it("should return last 10 bytes/characters when number of bytes is not specified and context is head.js", function() {
+  it("should return last 10 bytes/characters when range contains -10", function() {
     let expectedOutput = "T\nUV\nWX\nYZ";
-    assert.equal(getNBytes(contents, "tail.js"), expectedOutput);
+    assert.equal(getNBytes(contents, [-10]), expectedOutput);
   });
 
-  it("should return first 3 bytes when number of bytes is 3 and context is head.js", function() {
-    let expectedOutput = "AB\n";
-    assert.equal(getNBytes(contents, "head.js", 3), expectedOutput);
-  });
-
-  it("should return 3 bytes when number of bytes is 3 and context is tail.js", function() {
-    let expectedOutput = "\nYZ";
-    assert.equal(getNBytes(contents, "tail.js", 3), expectedOutput);
-  });
-
-  it("should return empty string when number of bytes is 0", function() {
-    let expectedOutput = "";
-    assert.equal(getNBytes(contents, "head.js", 0), expectedOutput);
+  it("should return whole contents when range is empty", function() {
+    let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
+    assert.equal(getNBytes(contents, []), expectedOutput);
   });
 
   it("should return empty string when contents is empty string ", function() {
     let contents = "";
     let expectedOutput = "";
-    assert.equal(getNBytes(contents, "head.js", 5), expectedOutput);
+    assert.equal(getNBytes(contents, [0, 5]), expectedOutput);
   });
 });
 
@@ -158,25 +139,25 @@ describe("getContents", function() {
   it("should return error message file does not exists when context is head.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "head: file1: No such file or directory";
-    assert.equal(getContents(fileSystem, "head.js", "file1"), expectedOutput);
+    assert.equal(getContents(fileSystem, "head", "file1"), expectedOutput);
   });
 
   it("should return error message file does not exists when context is tail.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => false };
     let expectedOutput = "tail: file1: No such file or directory";
-    assert.equal(getContents(fileSystem, "tail.js", "file1"), expectedOutput);
+    assert.equal(getContents(fileSystem, "tail", "file1"), expectedOutput);
   });
 
   it("should return Hello because file exists", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.equal(getContents(fileSystem, "head.js", "file1"), expectedOutput);
+    assert.equal(getContents(fileSystem, "head", "file1"), expectedOutput);
   });
 
   it("should return Hello when context is tail.js ", function() {
     let fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
     let expectedOutput = "Hello";
-    assert.equal(getContents(fileSystem, "tail.js", "file1"), expectedOutput);
+    assert.equal(getContents(fileSystem, "tail", "file1"), expectedOutput);
   });
 });
 
@@ -187,13 +168,13 @@ describe("checkErrors", function() {
     let expectedOutput =
       "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
     let args = ["-v", "file1"];
-    assert.equal(checkErrors(args, userInput, "head.js"), expectedOutput);
+    assert.equal(checkErrors(args, userInput, "head"), expectedOutput);
   });
   it("should return error message when count is invalid", function() {
     let userInput = { option: "n", count: "5x", files: ["file1"] };
     let expectedOutput = "tail: illegal offset -- 5x";
     let args = ["-n5x", "file1"];
-    assert.equal(checkErrors(args, userInput, "tail.js"), expectedOutput);
+    assert.equal(checkErrors(args, userInput, "tail"), expectedOutput);
   });
 });
 
@@ -230,35 +211,55 @@ describe("head", function() {
     let expectedOutput = "Hello";
     assert.deepEqual(head(["File1"], fileSystem, "head.js"), expectedOutput);
   });
+
+  it("should return lo message when operation is tail and option is c ", function() {
+    const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
+    let expectedOutput = "Hello";
+    assert.deepEqual(head(["File1"], fileSystem, "tail.js"), expectedOutput);
+  });
+
+  it("should return contents with heading when files are more than 1", function() {
+    const fileSystem = { readFileSync: () => "Hello", existsSync: () => true };
+    let expectedOutput = "==> File1 <==\nHello\n\n==> File2 <==\nHello";
+    assert.deepEqual(
+      head(["File1", "File2"], fileSystem, "tail.js"),
+      expectedOutput
+    );
+  });
 });
 
 describe("getRequiredContents", function() {
-  it("should return first 2 character if context is head.js", function() {
+  it("should return first 2 character if range is 0-2 and option is c", function() {
     let userInput = { option: "c", count: "2", files: ["file1"] };
-    assert.deepEqual(getRequiredContents(userInput, "head.js", "Hello"), "He");
+    assert.deepEqual(getRequiredContents(userInput, [0, 2], "Hello"), "He");
   });
 
-  it("should return first 2 lines if context is head.js", function() {
+  it("should return first 2 lines if range is 0-2 and option is n", function() {
     let userInput = { option: "n", count: "2", files: ["file1"] };
     let expectedOutput = "1\n2";
     let fileData = "1\n2\n3\n4";
     assert.deepEqual(
-      getRequiredContents(userInput, "head.js", fileData),
+      getRequiredContents(userInput, [0, 2], fileData),
       expectedOutput
     );
   });
 
-  it("should return last 2 characters if context is tail.js", function() {
-    let userInput = { option: "c", count: "2", files: ["file1"] };
-    assert.deepEqual(getRequiredContents(userInput, "tail.js", "Hello"), "lo");
+  it("should return last 2 lines if range is -2 and option is n", function() {
+    let userInput = { option: "n", count: "2", files: ["file1"] };
+    let expectedOutput = "3\n4";
+    let fileData = "1\n2\n3\n4";
+    assert.deepEqual(
+      getRequiredContents(userInput, [-2], fileData),
+      expectedOutput
+    );
   });
 
-  it("should return last 2 lines if context is head.js", function() {
-    let userInput = { option: "n", count: "2", files: ["file1"] };
-    let fileData = "1\n2\n3\n4\n5";
-    let expectedOutput = "4\n5";
+  it("should return last 2 characters when range is -2 and option is c", function() {
+    let userInput = { option: "c", count: "2", files: ["file1"] };
+    let expectedOutput = "\n4";
+    let fileData = "1\n2\n3\n4";
     assert.deepEqual(
-      getRequiredContents(userInput, "tail.js", fileData),
+      getRequiredContents(userInput, [-2], fileData),
       expectedOutput
     );
   });
@@ -336,22 +337,22 @@ describe("isValidOption", function() {
 
 describe("invalidCount", function() {
   it("it should return false if argument is 1", function() {
-    assert.deepEqual(invalidCount(1, "head.js"), false);
+    assert.deepEqual(invalidCount(1, "head"), false);
   });
   it("should return true if argument is string", function() {
-    assert.deepEqual(invalidCount("abc", "head.js"), true);
+    assert.deepEqual(invalidCount("abc", "head"), true);
   });
   it("should return true if argument is less than 0", function() {
-    assert.deepEqual(invalidCount("-8", "head.js"), true);
+    assert.deepEqual(invalidCount("-8", "head"), true);
   });
   it("it should return false if argument is 0", function() {
-    assert.deepEqual(invalidCount(0, "head.js"), true);
+    assert.deepEqual(invalidCount(0, "head"), true);
   });
   it("should return null if context is tail.js", function() {
-    assert.deepEqual(invalidCount(-1, "tail.js"), null);
+    assert.deepEqual(invalidCount(-1, "tail"), false);
   });
   it("should return true if argument is less than 1", function() {
-    assert.deepEqual(invalidCount("-8", "head.js"), true);
+    assert.deepEqual(invalidCount("-8", "head"), true);
   });
 });
 

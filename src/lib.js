@@ -1,22 +1,12 @@
-const getNLines = function(content, context, numOfLines = 10) {
-  if (context.match(/tail\.js/)) {
-    numOfLines = Math.max(content.split("\n").length - numOfLines, 0);
-    return content
-      .split("\n")
-      .slice(numOfLines)
-      .join("\n");
-  }
+const getNLines = function(content, range) {
   return content
     .split("\n")
-    .slice(0, numOfLines)
+    .slice(range[0], range[1])
     .join("\n");
 };
 
-const getNBytes = function(content, context, numOfBytes = 10) {
-  if (context.match(/tail\.js/)) {
-    return content.slice(content.length - numOfBytes);
-  }
-  return content.slice(0, numOfBytes);
+const getNBytes = function(content, range) {
+  return content.slice(range[0], range[1]);
 };
 
 const isNumber = function(value) {
@@ -44,7 +34,7 @@ const isNotTypeAndCount = function(x, y) {
 };
 
 const invalidCount = function(count, context) {
-  return context.match(/head\.js/) && (count < 1 || isNaN(count));
+  return context === "head" && (count < 1 || isNaN(count));
 };
 
 const addHeading = function(fileName, content) {
@@ -52,7 +42,7 @@ const addHeading = function(fileName, content) {
 };
 
 const invalidTailCount = function(context, count) {
-  return (context.match(/tail\.js/) && isNaN(count)) || count < 0;
+  return (context === "tail" && isNaN(count)) || count < 0;
 };
 
 const createObject = function(option, count, files) {
@@ -95,25 +85,17 @@ const checkErrors = function(args, userInput, context) {
 
 const getContents = function(fileSystem, context, file) {
   if (!fileSystem.existsSync(file)) {
-    return (
-      context
-        .match(/....\.js/)
-        .join("")
-        .slice(0, 4) +
-      ": " +
-      file +
-      ": No such file or directory"
-    );
+    return context + ": " + file + ": No such file or directory";
   }
   let contents = fileSystem.readFileSync(file, "utf8");
   return contents;
 };
 
-const getRequiredContents = function(userInput, context, contents) {
+const getRequiredContents = function(userInput, range, contents) {
   if (userInput.option == "n") {
-    return getNLines(contents, context, userInput.count);
+    return getNLines(contents, range);
   }
-  return getNBytes(contents, context, userInput.count);
+  return getNBytes(contents, range);
 };
 
 const formatContents = function(files, content, index) {
@@ -121,15 +103,23 @@ const formatContents = function(files, content, index) {
   return addHeading(files[index], content);
 };
 
-const head = function(args, fileSystem, context) {
+const head = function(args, fileSystem, operation) {
   let userInput = parse(args);
+  let context = operation
+    .match(/....\.js/)
+    .join("")
+    .slice(0, 4);
   let error = checkErrors(args, userInput, context);
+  let range = [0, userInput.count];
+  if (context === "tail") {
+    range = [-userInput.count];
+  }
   if (error) return error;
   let contents = userInput.files.map(
     getContents.bind(null, fileSystem, context)
   );
   let requiredContents = contents.map(
-    getRequiredContents.bind(null, userInput, context)
+    getRequiredContents.bind(null, userInput, range)
   );
   if (requiredContents.length == 1) return requiredContents.join("\n\n");
   let formattedContents = requiredContents.map(
