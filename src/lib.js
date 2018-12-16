@@ -63,23 +63,37 @@ const parse = function(args) {
   return parsedInput;
 };
 
-const checkErrors = function(args, userInput, context) {
-  const invalidLineCount = "head: illegal line count -- ";
-  const invalidByteCount = "head: illegal byte count -- ";
-  const errorMessage = "head: illegal option -- ";
-  const usageMessage = "usage: head [-n lines | -c bytes] [file ...]";
-  const errorStatments = {
-    n: invalidLineCount,
-    c: invalidByteCount
-  };
-  if (invalidTailCount(context, userInput.count)) {
-    return "tail: illegal offset -- " + userInput.count;
+const errorForIllegalCount = function(option, count, type) {
+  let optionType = { n: "line", c: "byte" };
+  let head = "head: illegal " + optionType[option] + " count -- " + count;
+  let tail = "tail: illegal offset -- " + count;
+  let types = { head, tail };
+  return types[type];
+};
+
+const errorForIllegalOption = function(option, type) {
+  let head =
+    "head: illegal option -- " +
+    option +
+    "\nusage: head [-n lines | -c bytes] [file ...]";
+  let tail =
+    "tail: illegal option -- " +
+    option +
+    "\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
+  types = { head, tail };
+  return types[type];
+};
+
+const checkErrors = function(parsedInputs, type) {
+  let { option, count } = parsedInputs;
+  if (option != "n" && option != "c") {
+    return errorForIllegalOption(option, type);
   }
-  if (isNotTypeAndCount(args[0], userInput.files[0])) {
-    return errorMessage + args[0].slice(1) + "\n" + usageMessage;
+  if (count == 0 && type == "tail") {
+    return " ";
   }
-  if (invalidCount(userInput.count, context)) {
-    return errorStatments[userInput.option] + userInput.count;
+  if (!(count > 0)) {
+    return errorForIllegalCount(option, count, type);
   }
 };
 
@@ -109,7 +123,7 @@ const getFilteredContents = function(args, fileSystem, operation) {
     .match(/....\.js/)
     .join("")
     .slice(0, 4);
-  let error = checkErrors(args, userInput, context);
+  let error = checkErrors(userInput, context);
   let range = [0, userInput.count];
   if (context === "tail") {
     range = [-userInput.count];
@@ -137,6 +151,8 @@ module.exports = {
   getContents,
   getRequiredContents,
   formatContents,
+  errorForIllegalCount,
+  errorForIllegalOption,
   checkErrors,
   getNBytes,
   isNumber,
