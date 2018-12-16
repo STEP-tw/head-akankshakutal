@@ -27,6 +27,8 @@ const existsSync = function(fileName) {
   return files.includes(fileName);
 };
 
+let fileSystem = { readFileSync, existsSync };
+
 describe("getNLines", function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
 
@@ -79,26 +81,22 @@ describe("getNBytes", function() {
 
 describe("getContents", function() {
   it("should return error message file does not exists when context is head.js ", function() {
-    let fileSystem = { readFileSync: readFileSync, existsSync };
     let expectedOutput = "head: file1: No such file or directory";
     assert.equal(getContents(fileSystem, "head", "file1"), expectedOutput);
   });
 
   it("should return error message file does not exists when context is tail.js ", function() {
-    let fileSystem = { readFileSync, existsSync };
     let expectedOutput = "tail: file1: No such file or directory";
     assert.equal(getContents(fileSystem, "tail", "file1"), expectedOutput);
   });
 
   it("should return Hello because file exists", function() {
-    let fileSystem = { readFileSync, existsSync };
     let expectedOutput =
       "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.\nPerpendicular Lines.";
     assert.equal(getContents(fileSystem, "head", "lines"), expectedOutput);
   });
 
   it("should return Hello when context is tail.js ", function() {
-    let fileSystem = { readFileSync, existsSync };
     let expectedOutput =
       "One\nTwo\nThree\nFour\nFive\nSix\nSeven\nEight\nNine\nTen";
     assert.equal(getContents(fileSystem, "tail", "numbers"), expectedOutput);
@@ -107,7 +105,6 @@ describe("getContents", function() {
 
 describe("getFilteredContents", function() {
   it("should return first 5 lines of single file", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "n", count: 5, fileNames: ["lines"] };
     let expectedOutput =
       "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.";
@@ -118,7 +115,6 @@ describe("getFilteredContents", function() {
   });
 
   it("should return last 5 lines of single file", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "n", count: 5, fileNames: ["digits"] };
     let expectedOutput = "5\n6\n7\n8\n9";
     assert.equal(
@@ -128,7 +124,6 @@ describe("getFilteredContents", function() {
   });
 
   it("should return first 5 lines of every file", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "n", count: 5, fileNames: ["lines", "digits"] };
     let expectedOutput =
       "==> lines <==\nThere are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.\n\n==> digits <==\n0\n1\n2\n3\n4";
@@ -139,7 +134,6 @@ describe("getFilteredContents", function() {
   });
 
   it("should return last 5 lines of every file ", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "n", count: 5, fileNames: ["digits", "lines"] };
     let expectedOutput =
       "==> digits <==\n5\n6\n7\n8\n9\n\n==> lines <==\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.\nPerpendicular Lines.";
@@ -150,7 +144,6 @@ describe("getFilteredContents", function() {
   });
 
   it("should return first 5 characters of single file", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "c", count: 5, fileNames: ["lines"] };
     let expectedOutput = "There";
     assert.equal(
@@ -160,7 +153,6 @@ describe("getFilteredContents", function() {
   });
 
   it("should return last 5 characters of single file", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "c", count: 5, fileNames: ["digits"] };
     let expectedOutput = "7\n8\n9";
     assert.equal(
@@ -170,7 +162,6 @@ describe("getFilteredContents", function() {
   });
 
   it("should return first 5 characters of every file", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "c", count: 5, fileNames: ["lines", "digits"] };
     let expectedOutput = "==> lines <==\nThere\n\n==> digits <==\n0\n1\n2";
     assert.equal(
@@ -180,7 +171,6 @@ describe("getFilteredContents", function() {
   });
 
   it("should return last 5 characters of every file ", function() {
-    let fileSystem = { readFileSync, existsSync };
     let userInput = { option: "c", count: 5, fileNames: ["digits", "lines"] };
     let expectedOutput = "==> digits <==\n7\n8\n9\n\n==> lines <==\nines.";
     assert.deepEqual(
@@ -193,7 +183,6 @@ describe("getFilteredContents", function() {
 describe("headOrTail", function() {
   it("should return error message when input contains count as 0 ", function() {
     let userInput = { option: "n", count: 0, fileNames: ["digits"] };
-    const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "head: illegal line count -- 0";
     assert.deepEqual(
       headOrTail(userInput, "head.js", fileSystem),
@@ -203,7 +192,6 @@ describe("headOrTail", function() {
 
   it("should return error message when count is invalid ", function() {
     let userInput = { option: "n", count: "X", fileNames: ["numbers"] };
-    const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "head: illegal line count -- X";
     assert.deepEqual(
       headOrTail(userInput, "head.js", fileSystem),
@@ -213,7 +201,6 @@ describe("headOrTail", function() {
 
   it("should return error message when input contains invalid file ", function() {
     let userInput = { option: "n", count: 5, fileNames: ["lines"] };
-    const fileSystem = { readFileSync, existsSync };
     let expectedOutput =
       "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.";
     assert.deepEqual(
@@ -224,7 +211,6 @@ describe("headOrTail", function() {
 
   it("should return Hello message when all inputs are valid ", function() {
     let userInput = { option: "n", count: 10, fileNames: ["digits"] };
-    const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "0\n1\n2\n3\n4\n5\n6\n7\n8\n9";
     assert.deepEqual(
       headOrTail(userInput, "head.js", fileSystem),
@@ -234,7 +220,6 @@ describe("headOrTail", function() {
 
   it("should return lo message when operation is tail and option is c ", function() {
     let userInput = { option: "c", count: 2, fileNames: ["lines"] };
-    const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "s.";
     assert.deepEqual(
       headOrTail(userInput, "tail.js", fileSystem),
@@ -248,7 +233,6 @@ describe("headOrTail", function() {
       count: 10,
       fileNames: ["numbers", "digits"]
     };
-    const fileSystem = { readFileSync, existsSync };
     let expectedOutput =
       "==> numbers <==\nOne\nTwo\nThree\nFour\nFive\nSix\nSeven\nEight\nNine\nTen\n\n==> digits <==\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9";
     assert.deepEqual(
