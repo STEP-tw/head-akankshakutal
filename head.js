@@ -5,7 +5,6 @@ const fs = require("fs");
 const main = function() {
   let args = process.argv.slice(2);
   let parsedInput = parse(args);
-  console.log(parsedInput);
   let result = getFilteredContents(parsedInput, process.argv[1], fs);
   console.log(result);
 };
