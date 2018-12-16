@@ -35,17 +35,11 @@ const formatContents = function(fileNames, content, index) {
   return addHeading(fileNames[index], content);
 };
 
-const getFilteredContents = function(userInput, operation, fileSystem) {
-  let context = operation
-    .match(/....\.js/)
-    .join("")
-    .slice(0, 4);
-  let error = checkErrors(userInput, context);
+const getFilteredContents = function(userInput, context, fileSystem) {
   let range = [0, userInput.count];
   if (context === "tail") {
     range = [-userInput.count];
   }
-  if (error) return error;
   let contents = userInput.fileNames.map(
     getContents.bind(null, fileSystem, context)
   );
@@ -59,6 +53,16 @@ const getFilteredContents = function(userInput, operation, fileSystem) {
   return formattedContents.join("\n\n");
 };
 
+const headOrTail = function(userInput, operation, fileSystem) {
+  let context = operation
+    .match(/....\.js/)
+    .join("")
+    .slice(0, 4);
+  let error = checkErrors(userInput, context);
+  if (error) return error;
+  return getFilteredContents(userInput, context, fileSystem);
+};
+
 module.exports = {
   getFilteredContents,
   getNLines,
@@ -66,5 +70,6 @@ module.exports = {
   getContents,
   getRequiredContents,
   formatContents,
-  getNBytes
+  getNBytes,
+  headOrTail
 };

@@ -6,6 +6,7 @@ const {
   getContents,
   formatContents,
   getFilteredContents,
+  headOrTail,
   getNBytes
 } = require("../src/lib.js");
 
@@ -105,12 +106,97 @@ describe("getContents", function() {
 });
 
 describe("getFilteredContents", function() {
+  it("should return first 5 lines of single file", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "n", count: 5, fileNames: ["lines"] };
+    let expectedOutput =
+      "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.";
+    assert.equal(
+      getFilteredContents(userInput, "head.js", fileSystem),
+      expectedOutput
+    );
+  });
+
+  it("should return last 5 lines of single file", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "n", count: 5, fileNames: ["digits"] };
+    let expectedOutput = "5\n6\n7\n8\n9";
+    assert.equal(
+      getFilteredContents(userInput, "tail", fileSystem),
+      expectedOutput
+    );
+  });
+
+  it("should return first 5 lines of every file", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "n", count: 5, fileNames: ["lines", "digits"] };
+    let expectedOutput =
+      "==> lines <==\nThere are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.\n\n==> digits <==\n0\n1\n2\n3\n4";
+    assert.equal(
+      getFilteredContents(userInput, "head.js", fileSystem),
+      expectedOutput
+    );
+  });
+
+  it("should return last 5 lines of every file ", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "n", count: 5, fileNames: ["digits", "lines"] };
+    let expectedOutput =
+      "==> digits <==\n5\n6\n7\n8\n9\n\n==> lines <==\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.\nPerpendicular Lines.";
+    assert.deepEqual(
+      getFilteredContents(userInput, "tail", fileSystem),
+      expectedOutput
+    );
+  });
+
+  it("should return first 5 characters of single file", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "c", count: 5, fileNames: ["lines"] };
+    let expectedOutput = "There";
+    assert.equal(
+      getFilteredContents(userInput, "head.js", fileSystem),
+      expectedOutput
+    );
+  });
+
+  it("should return last 5 characters of single file", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "c", count: 5, fileNames: ["digits"] };
+    let expectedOutput = "7\n8\n9";
+    assert.equal(
+      getFilteredContents(userInput, "tail", fileSystem),
+      expectedOutput
+    );
+  });
+
+  it("should return first 5 characters of every file", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "c", count: 5, fileNames: ["lines", "digits"] };
+    let expectedOutput = "==> lines <==\nThere\n\n==> digits <==\n0\n1\n2";
+    assert.equal(
+      getFilteredContents(userInput, "head.js", fileSystem),
+      expectedOutput
+    );
+  });
+
+  it("should return last 5 characters of every file ", function() {
+    let fileSystem = { readFileSync, existsSync };
+    let userInput = { option: "c", count: 5, fileNames: ["digits", "lines"] };
+    let expectedOutput = "==> digits <==\n7\n8\n9\n\n==> lines <==\nines.";
+    assert.deepEqual(
+      getFilteredContents(userInput, "tail", fileSystem),
+      expectedOutput
+    );
+  });
+});
+
+describe("headOrTail", function() {
   it("should return error message when input contains count as 0 ", function() {
     let userInput = { option: "n", count: 0, fileNames: ["digits"] };
     const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "head: illegal line count -- 0";
     assert.deepEqual(
-      getFilteredContents(userInput, "head.js", fileSystem),
+      headOrTail(userInput, "head.js", fileSystem),
       expectedOutput
     );
   });
@@ -120,7 +206,7 @@ describe("getFilteredContents", function() {
     const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "head: illegal line count -- X";
     assert.deepEqual(
-      getFilteredContents(userInput, "head.js", fileSystem),
+      headOrTail(userInput, "head.js", fileSystem),
       expectedOutput
     );
   });
@@ -131,7 +217,7 @@ describe("getFilteredContents", function() {
     let expectedOutput =
       "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.";
     assert.deepEqual(
-      getFilteredContents(userInput, "head.js", fileSystem),
+      headOrTail(userInput, "head.js", fileSystem),
       expectedOutput
     );
   });
@@ -141,7 +227,7 @@ describe("getFilteredContents", function() {
     const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "0\n1\n2\n3\n4\n5\n6\n7\n8\n9";
     assert.deepEqual(
-      getFilteredContents(userInput, "head.js", fileSystem),
+      headOrTail(userInput, "head.js", fileSystem),
       expectedOutput
     );
   });
@@ -151,7 +237,7 @@ describe("getFilteredContents", function() {
     const fileSystem = { readFileSync, existsSync };
     let expectedOutput = "s.";
     assert.deepEqual(
-      getFilteredContents(userInput, "tail.js", fileSystem),
+      headOrTail(userInput, "tail.js", fileSystem),
       expectedOutput
     );
   });
@@ -166,7 +252,7 @@ describe("getFilteredContents", function() {
     let expectedOutput =
       "==> numbers <==\nOne\nTwo\nThree\nFour\nFive\nSix\nSeven\nEight\nNine\nTen\n\n==> digits <==\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9";
     assert.deepEqual(
-      getFilteredContents(userInput, "tail.js", fileSystem),
+      headOrTail(userInput, "tail.js", fileSystem),
       expectedOutput
     );
   });
