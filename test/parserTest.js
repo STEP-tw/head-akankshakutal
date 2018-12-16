@@ -45,70 +45,95 @@ describe("isValidOption", function() {
 
 describe("createObject", function() {
   it("should return object that contains three keys", function() {
-    assert.deepEqual(createObject("n", 5, ["Hello", "Hiii"]), {
+    let expectedOutput = {
       option: "n",
       count: 5,
       fileNames: ["Hello", "Hiii"]
-    });
+    };
+    assert.deepEqual(createObject("n", 5, ["Hello", "Hiii"]), expectedOutput);
   });
 
   it("should return object with undefined when args are not given ", function() {
-    assert.deepEqual(createObject(), {
+    let expectedOutput = {
       option: undefined,
       count: undefined,
       fileNames: undefined
-    });
+    };
+    assert.deepEqual(createObject(), expectedOutput);
   });
 });
 
 describe("parse", function() {
-  it("should return object when count is with option", function() {
-    let input = ["-n4", "File1", "File2", "File3"];
-    let expectedOutput = {
-      option: "n",
-      count: 4,
-      fileNames: ["File1", "File2", "File3"]
-    };
-    assert.deepEqual(parse(input), expectedOutput);
-  });
+  describe("for -n option", function() {
+    it("should return object when count is with option", function() {
+      let input = ["-n4", "File1"];
+      let expectedOutput = {
+        option: "n",
+        count: 4,
+        fileNames: ["File1"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
 
-  it("should return object when count is on second index ", function() {
-    let input = ["-n", "4", "File2", "File3"];
-    let expectedOutput = {
-      option: "n",
-      count: 4,
-      fileNames: ["File2", "File3"]
-    };
-    assert.deepEqual(parse(input), expectedOutput);
-  });
+    it("should give default option -n if option is not specified", function() {
+      input = ["-5", "file1"];
+      expectedOutput = {
+        option: "n",
+        count: 5,
+        fileNames: ["file1"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
 
-  it("should return object which contains string in count", function() {
-    let input = ["-n", "File1", "File2", "File3"];
-    let expectedOutput = {
-      option: "n",
-      count: "File1",
-      fileNames: ["File2", "File3"]
-    };
-    assert.deepEqual(parse(input), expectedOutput);
-  });
+    it("should return object when count is on second index ", function() {
+      let input = ["-n", "4", "File2"];
+      let expectedOutput = {
+        option: "n",
+        count: 4,
+        fileNames: ["File2"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
 
-  it("should return object which contains n as a default option ", function() {
-    let input = ["-20", "File1", "File2", "File3"];
-    let expectedOutput = {
-      option: "n",
-      count: "20",
-      fileNames: ["File1", "File2", "File3"]
-    };
-    assert.deepEqual(parse(input), expectedOutput);
+    it("should return object which contains string in count", function() {
+      let input = ["-n", "File1"];
+      let expectedOutput = {
+        option: "n",
+        count: "File1",
+        fileNames: []
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
   });
+  describe("for -c option", function() {
+    it("should return object which contains c as a option ", function() {
+      let input = ["-c20", "File1"];
+      let expectedOutput = {
+        option: "c",
+        count: "20",
+        fileNames: ["File1"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
 
-  it("should return type n, range 10 and given input in fileNames if there is no type or range specified", function() {
-    let input = ["file1", "file2"];
-    let expectedOutput = {
-      option: "n",
-      count: 10,
-      fileNames: ["file1", "file2"]
-    };
-    assert.deepEqual(parse(input), expectedOutput);
+    it("should return type n, range 10 and given input in fileNames if there is no type or range specified", function() {
+      let input = ["file1"];
+      let expectedOutput = {
+        option: "n",
+        count: 10,
+        fileNames: ["file1"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
+
+    it("should return object when count is on second index ", function() {
+      let input = ["-c", "4", "File2"];
+      let expectedOutput = {
+        option: "c",
+        count: 4,
+        fileNames: ["File2"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
   });
 });

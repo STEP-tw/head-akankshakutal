@@ -60,40 +60,43 @@ describe("isValidForTail", function() {
 });
 
 describe("checkErrors", function() {
-  it("should return error message with usage message when option is invalid", function() {
-    let userInput = { option: "v", count: "1" };
-    let expectedOutput =
-      "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
-    assert.equal(checkErrors(userInput, "head"), expectedOutput);
-  });
+  describe("for head", function() {
+    it("should return error message with usage message when option is invalid", function() {
+      let userInput = { option: "v", count: "1" };
+      let expectedOutput =
+        "head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]";
+      assert.equal(checkErrors(userInput, "head"), expectedOutput);
+    });
 
-  it("should return error mssage when count is 0 and type is head", function() {
-    let userInput = { option: "c", count: 0 };
-    let expectedOutput = "head: illegal byte count -- 0";
-    assert.deepEqual(checkErrors(userInput, "head"), expectedOutput);
-  });
+    it("should return error mssage when count is 0 and type is head", function() {
+      let userInput = { option: "c", count: 0 };
+      let expectedOutput = "head: illegal byte count -- 0";
+      assert.deepEqual(checkErrors(userInput, "head"), expectedOutput);
+    });
 
-  it("should return error message when count is invalid and type is head ", function() {
-    let userInput = { option: "c", count: "5x" };
-    let expectedOutput = "head: illegal byte count -- 5x";
-    assert.deepEqual(checkErrors(userInput, "head"), expectedOutput);
+    it("should return error message when count is invalid and type is head ", function() {
+      let userInput = { option: "c", count: "5x" };
+      let expectedOutput = "head: illegal byte count -- 5x";
+      assert.deepEqual(checkErrors(userInput, "head"), expectedOutput);
+    });
   });
+  describe("for tail", function() {
+    it("shouldn't return any error and usage message when option is invalid ", () => {
+      let userInput = { option: "p", count: 7 };
+      let expectedOutput =
+        "tail: illegal option -- p\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
+      assert.deepEqual(checkErrors(userInput, "tail"), expectedOutput);
+    });
 
-  it("shouldn't return any error and usage message when option is invalid ", () => {
-    let userInput = { option: "p", count: 7 };
-    let expectedOutput =
-      "tail: illegal option -- p\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
-    assert.deepEqual(checkErrors(userInput, "tail"), expectedOutput);
-  });
+    it("should return error message when count is invalid and type is tail ", function() {
+      let userInput = { option: "n", count: "5x" };
+      let expectedOutput = "tail: illegal offset -- 5x";
+      assert.equal(checkErrors(userInput, "tail"), expectedOutput);
+    });
 
-  it("should return error message when count is invalid and type is tail ", function() {
-    let userInput = { option: "n", count: "5x" };
-    let expectedOutput = "tail: illegal offset -- 5x";
-    assert.equal(checkErrors(userInput, "tail"), expectedOutput);
-  });
-
-  it("should return empty string when count is 0", function() {
-    let userInput = { option: "n", count: 0 };
-    assert.deepEqual(checkErrors(userInput, "tail"), " ");
+    it("should return empty string when count is 0", function() {
+      let userInput = { option: "n", count: 0 };
+      assert.deepEqual(checkErrors(userInput, "tail"), " ");
+    });
   });
 });
