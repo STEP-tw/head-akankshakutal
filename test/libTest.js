@@ -42,7 +42,7 @@ describe("getNLines", function() {
     assert.equal(getNLines(contents, [-10]), expectedOutput);
   });
 
-  it("should return empty string when contents are empty", function() {
+  it("should return empty string when content is empty", function() {
     let contents = "";
     let expectedOutput = "";
     assert.equal(getNLines(contents, [0, 5]), expectedOutput);
@@ -67,15 +67,15 @@ describe("getNBytes", function() {
     assert.equal(getNBytes(contents, [-10]), expectedOutput);
   });
 
-  it("should return whole contents when range is empty", function() {
-    let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
-    assert.equal(getNBytes(contents, []), expectedOutput);
-  });
-
-  it("should return empty string when contents is empty string ", function() {
+  it("should return empty string when content is empty", function() {
     let contents = "";
     let expectedOutput = "";
     assert.equal(getNBytes(contents, [0, 5]), expectedOutput);
+  });
+
+  it("should return whole contents when range is empty", function() {
+    let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
+    assert.equal(getNBytes(contents, []), expectedOutput);
   });
 });
 
@@ -90,13 +90,13 @@ describe("getContents", function() {
     assert.equal(getContents(fileSystem, "tail", "file1"), expectedOutput);
   });
 
-  it("should return Hello because file exists", function() {
+  it("should return whole contents of file because file exists", function() {
     let expectedOutput =
       "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.\nPerpendicular Lines.";
     assert.equal(getContents(fileSystem, "head", "lines"), expectedOutput);
   });
 
-  it("should return Hello when context is tail.js ", function() {
+  it("should return whole contents of file because file exists", function() {
     let expectedOutput =
       "One\nTwo\nThree\nFour\nFive\nSix\nSeven\nEight\nNine\nTen";
     assert.equal(getContents(fileSystem, "tail", "numbers"), expectedOutput);

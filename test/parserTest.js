@@ -116,11 +116,11 @@ describe("parse", function() {
       assert.deepEqual(parse(input), expectedOutput);
     });
 
-    it("should return type n, range 10 and given input in fileNames if there is no type or range specified", function() {
-      let input = ["file1"];
+    it("should return object when count is on second index", function() {
+      let input = ["-c", "6", "file1"];
       let expectedOutput = {
-        option: "n",
-        count: 10,
+        option: "c",
+        count: 6,
         fileNames: ["file1"]
       };
       assert.deepEqual(parse(input), expectedOutput);

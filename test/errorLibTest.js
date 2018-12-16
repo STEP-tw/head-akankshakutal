@@ -74,7 +74,7 @@ describe("checkErrors", function() {
       assert.deepEqual(checkErrors(userInput, "head"), expectedOutput);
     });
 
-    it("should return error message when count is invalid and type is head ", function() {
+    it("should return error message when count is invalid", function() {
       let userInput = { option: "c", count: "5x" };
       let expectedOutput = "head: illegal byte count -- 5x";
       assert.deepEqual(checkErrors(userInput, "head"), expectedOutput);
@@ -88,15 +88,15 @@ describe("checkErrors", function() {
       assert.deepEqual(checkErrors(userInput, "tail"), expectedOutput);
     });
 
-    it("should return error message when count is invalid and type is tail ", function() {
-      let userInput = { option: "n", count: "5x" };
-      let expectedOutput = "tail: illegal offset -- 5x";
-      assert.equal(checkErrors(userInput, "tail"), expectedOutput);
-    });
-
     it("should return empty string when count is 0", function() {
       let userInput = { option: "n", count: 0 };
       assert.deepEqual(checkErrors(userInput, "tail"), " ");
+    });
+
+    it("should return error message when count is invalid", function() {
+      let userInput = { option: "n", count: "5x" };
+      let expectedOutput = "tail: illegal offset -- 5x";
+      assert.equal(checkErrors(userInput, "tail"), expectedOutput);
     });
   });
 });
