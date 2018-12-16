@@ -15,10 +15,6 @@ const addHeading = function(fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
 
-const createObject = function(option, count, files) {
-  return { option, count, files };
-};
-
 const getContents = function(fileSystem, context, file) {
   if (!fileSystem.existsSync(file)) {
     return context + ": " + file + ": No such file or directory";

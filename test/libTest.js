@@ -5,22 +5,19 @@ const {
   getRequiredContents,
   getContents,
   formatContents,
-  errorForIllegalCount,
-  errorForIllegalOption,
-  checkErrors,
   getFilteredContents,
   getNBytes
 } = require("../src/lib.js");
 
 describe("getNLines", function() {
+  let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
+
   it("should return first 10 lines when range is 0-10", function() {
-    let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
     let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST";
     assert.equal(getNLines(contents, [0, 10]), expectedOutput);
   });
 
   it("should return last 10 lines when range contains only -10", function() {
-    let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
     let expectedOutput = "GH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
     assert.equal(getNLines(contents, [-10]), expectedOutput);
   });
@@ -32,7 +29,6 @@ describe("getNLines", function() {
   });
 
   it("should return whole contents when range is empty ", function() {
-    let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
     let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
     assert.equal(getNLines(contents, []), expectedOutput);
   });
