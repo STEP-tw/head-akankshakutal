@@ -30,9 +30,9 @@ const getRequiredContents = function(userInput, range, contents) {
   return getNBytes(contents, range);
 };
 
-const formatContents = function(files, content, index) {
+const formatContents = function(fileNames, content, index) {
   if (content.match(/: No such file or directory/)) return content;
-  return addHeading(files[index], content);
+  return addHeading(fileNames[index], content);
 };
 
 const getFilteredContents = function(userInput, operation, fileSystem) {
@@ -46,7 +46,7 @@ const getFilteredContents = function(userInput, operation, fileSystem) {
     range = [-userInput.count];
   }
   if (error) return error;
-  let contents = userInput.files.map(
+  let contents = userInput.fileNames.map(
     getContents.bind(null, fileSystem, context)
   );
   let requiredContents = contents.map(
@@ -54,7 +54,7 @@ const getFilteredContents = function(userInput, operation, fileSystem) {
   );
   if (requiredContents.length == 1) return requiredContents.join("\n\n");
   let formattedContents = requiredContents.map(
-    formatContents.bind(null, userInput.files)
+    formatContents.bind(null, userInput.fileNames)
   );
   return formattedContents.join("\n\n");
 };

@@ -10,12 +10,12 @@ const isValidOption = function(value) {
   return value.match(/^-[a-z][0-9]/g);
 };
 
-const createObject = function(option, count, files) {
-  return { option, count, files };
+const createObject = function(option, count, fileNames) {
+  return { option, count, fileNames };
 };
 
 const parse = function(args) {
-  let parsedInput = { option: "n", count: 10, files: args.slice(0) };
+  let parsedInput = { option: "n", count: 10, fileNames: args.slice(0) };
   if (isOnlyType(args[0])) {
     parsedInput = createObject(args[0][1], args[1], args.slice(2));
   }

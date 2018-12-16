@@ -1,8 +1,10 @@
-const { parse , 
-  createObject, 
+const {
+  parse,
+  createObject,
   isNumber,
   isOnlyType,
-  isValidOption }  = require("../src/parser.js");
+  isValidOption
+} = require("../src/parser.js");
 
 const assert = require("assert");
 
@@ -46,7 +48,7 @@ describe("createObject", function() {
     assert.deepEqual(createObject("n", 5, ["Hello", "Hiii"]), {
       option: "n",
       count: 5,
-      files: ["Hello", "Hiii"]
+      fileNames: ["Hello", "Hiii"]
     });
   });
 
@@ -54,7 +56,7 @@ describe("createObject", function() {
     assert.deepEqual(createObject(), {
       option: undefined,
       count: undefined,
-      files: undefined
+      fileNames: undefined
     });
   });
 });
@@ -65,14 +67,18 @@ describe("parse", function() {
     let expectedOutput = {
       option: "n",
       count: 4,
-      files: ["File1", "File2", "File3"]
+      fileNames: ["File1", "File2", "File3"]
     };
     assert.deepEqual(parse(input), expectedOutput);
   });
 
   it("should return object when count is on second index ", function() {
     let input = ["-n", "4", "File2", "File3"];
-    let expectedOutput = { option: "n", count: 4, files: ["File2", "File3"] };
+    let expectedOutput = {
+      option: "n",
+      count: 4,
+      fileNames: ["File2", "File3"]
+    };
     assert.deepEqual(parse(input), expectedOutput);
   });
 
@@ -81,7 +87,7 @@ describe("parse", function() {
     let expectedOutput = {
       option: "n",
       count: "File1",
-      files: ["File2", "File3"]
+      fileNames: ["File2", "File3"]
     };
     assert.deepEqual(parse(input), expectedOutput);
   });
@@ -91,16 +97,18 @@ describe("parse", function() {
     let expectedOutput = {
       option: "n",
       count: "20",
-      files: ["File1", "File2", "File3"]
+      fileNames: ["File1", "File2", "File3"]
     };
     assert.deepEqual(parse(input), expectedOutput);
   });
 
-  it("should return type n, range 10 and given input in files if there is no type or range specified", function() {
+  it("should return type n, range 10 and given input in fileNames if there is no type or range specified", function() {
     let input = ["file1", "file2"];
-    let expectedOutput = { option: "n", count: 10, files: ["file1", "file2"] };
+    let expectedOutput = {
+      option: "n",
+      count: 10,
+      fileNames: ["file1", "file2"]
+    };
     assert.deepEqual(parse(input), expectedOutput);
   });
 });
-
-
