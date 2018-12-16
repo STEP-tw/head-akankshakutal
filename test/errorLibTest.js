@@ -2,6 +2,8 @@ const assert = require("assert");
 const {
   errorForIllegalCount,
   errorForIllegalOption,
+  isOptionInvalid,
+  isValidForTail,
   checkErrors
 } = require("../src/errorLib.js");
 
@@ -28,6 +30,32 @@ describe("errorForIllegalOption", function() {
     let expectedOutput =
       "tail: illegal option -- k\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
     assert.deepEqual(errorForIllegalOption("k", "tail"), expectedOutput);
+  });
+});
+
+describe("isOptionInvalid", function() {
+  it("should return false when option is n", function() {
+    assert.equal(isOptionInvalid("n"), false);
+  });
+  it("should return false when option is c", function() {
+    assert.equal(isOptionInvalid("c"), false);
+  });
+  it("should return true when option is other than c,n", function() {
+    assert.equal(isOptionInvalid("p"), true);
+    assert.equal(isOptionInvalid("v"), true);
+  });
+});
+
+describe("isValidForTail", function() {
+  it("should return true if type is tail and count is 0", function() {
+    assert.equal(isValidForTail("tail", 0), true);
+  });
+
+  it("should return false if type is other tahn tail ", function() {
+    assert.equal(isValidForTail("head", 0), false);
+  });
+  it("should return false if count is other than 0", function() {
+    assert.equal(isValidForTail("tail", 8), false);
   });
 });
 

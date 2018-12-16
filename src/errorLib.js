@@ -19,12 +19,20 @@ const errorForIllegalOption = function(option, type) {
   return types[type];
 };
 
+const isOptionInvalid = function(option) {
+  return option != "n" && option != "c";
+};
+
+const isValidForTail = function(type, count) {
+  return count == 0 && type == "tail";
+};
+
 const checkErrors = function(parsedInputs, type) {
   let { option, count } = parsedInputs;
-  if (option != "n" && option != "c") {
+  if (isOptionInvalid(option)) {
     return errorForIllegalOption(option, type);
   }
-  if (count == 0 && type == "tail") {
+  if (isValidForTail(type, count)) {
     return " ";
   }
   if (!(count > 0)) {
@@ -34,5 +42,7 @@ const checkErrors = function(parsedInputs, type) {
 module.exports = {
   errorForIllegalCount,
   errorForIllegalOption,
+  isOptionInvalid,
+  isValidForTail,
   checkErrors
 };
