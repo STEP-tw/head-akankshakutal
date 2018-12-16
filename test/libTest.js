@@ -106,7 +106,7 @@ describe("getContents", function() {
 describe("getFilteredContents", function() {
   describe("for head", function() {
     it("should return first 5 lines of single file", function() {
-      let userInput = { option: "n", count: 5, fileNames: ["lines"] };
+      let userInput = { option: "n", count: c5, fileNames: ["lines"] };
       let expectedOutput =
         "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.";
       assert.equal(
