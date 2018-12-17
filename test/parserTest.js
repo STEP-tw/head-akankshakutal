@@ -1,23 +1,11 @@
 const {
   parse,
   createObject,
-  isNumber,
   isOnlyType,
   isValidOption
 } = require("../src/parser.js");
 
 const assert = require("assert");
-
-describe("isNumber", function() {
-  it("it Should return null if suplied argument is not number", function() {
-    assert.deepEqual(isNumber("aa"), null);
-    assert.deepEqual(isNumber("8"), null);
-  });
-
-  it("it should return array if supplied argument is -anyNumber", function() {
-    assert.deepEqual(isNumber("-8"), ["-8"]);
-  });
-});
 
 describe("isOnlyType", function() {
   it("should return null if the arguments are not alphabate", function() {
