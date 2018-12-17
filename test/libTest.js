@@ -30,27 +30,27 @@ const existsSync = function(fileName) {
 let fs = { readFileSync, existsSync };
 
 describe("getNLines", function() {
-  let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
+  let alphabets = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
 
   it("should return first 10 lines when range is 0-10", function() {
     let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST";
-    assert.equal(getNLines(contents, [0, 10]), expectedOutput);
+    assert.equal(getNLines(alphabets, [0, 10]), expectedOutput);
   });
 
   it("should return last 10 lines when range contains only -10", function() {
     let expectedOutput = "GH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
-    assert.equal(getNLines(contents, [-10]), expectedOutput);
+    assert.equal(getNLines(alphabets, [-10]), expectedOutput);
   });
 
   it("should return empty string when content is empty", function() {
-    let contents = "";
+    let emptyString = "";
     let expectedOutput = "";
-    assert.equal(getNLines(contents, [0, 5]), expectedOutput);
+    assert.equal(getNLines(emptyString, [0, 5]), expectedOutput);
   });
 
   it("should return whole contents when range is empty ", function() {
     let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
-    assert.equal(getNLines(contents, []), expectedOutput);
+    assert.equal(getNLines(alphabets, []), expectedOutput);
   });
 });
 
