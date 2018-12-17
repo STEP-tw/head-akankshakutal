@@ -8,8 +8,8 @@ const {
 const assert = require("assert");
 
 describe("isOnlyType", function() {
-  it("should return null if the arguments are not alphabate", function() {
-    assert.deepEqual(isOnlyType("-e"), ["-e"]);
+  it("should return null if the arguments are not alphabet", function() {
+    assert.deepEqual(isOnlyType("-6"), null);
   });
 
   it("should return array of alphabate if the arguments are alphabate and value", function() {
