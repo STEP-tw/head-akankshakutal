@@ -1,4 +1,4 @@
-const errorForIllegalCount = function(option, count, type) {
+const illegalCountError = function(option, count, type) {
   let optionType = { n: "line", c: "byte" };
   let head = "head: illegal " + optionType[option] + " count -- " + count;
   let tail = "tail: illegal offset -- " + count;
@@ -10,7 +10,7 @@ const isValidForTail = function(type, count) {
   return count == 0 && type == "tail";
 };
 
-const errorForIllegalOption = function(option, type) {
+const illegalOptionError = function(option, type) {
   let head =
     "head: illegal option -- " +
     option +
@@ -30,18 +30,18 @@ const isOptionInvalid = function(option) {
 const checkErrors = function(parsedInputs, type) {
   let { option, count } = parsedInputs;
   if (isOptionInvalid(option)) {
-    return errorForIllegalOption(option, type);
+    return illegalOptionError(option, type);
   }
   if (isValidForTail(type, count)) {
     return " ";
   }
   if (!(count > 0)) {
-    return errorForIllegalCount(option, count, type);
+    return illegalCountError(option, count, type);
   }
 };
 module.exports = {
-  errorForIllegalCount,
-  errorForIllegalOption,
+  illegalCountError,
+  illegalOptionError,
   isOptionInvalid,
   isValidForTail,
   checkErrors

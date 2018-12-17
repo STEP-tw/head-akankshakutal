@@ -1,35 +1,35 @@
 const assert = require("assert");
 const {
-  errorForIllegalCount,
-  errorForIllegalOption,
+  illegalCountError,
+  illegalOptionError,
   isOptionInvalid,
   isValidForTail,
   checkErrors
 } = require("../src/errorLib.js");
 
-describe("errorForIllegalCount", function() {
+describe("illegalCountError", function() {
   it("should give error message for illegal number of lines", function() {
     let expectedOutput = "head: illegal line count -- 0";
-    assert.deepEqual(errorForIllegalCount("n", 0, "head"), expectedOutput);
+    assert.deepEqual(illegalCountError("n", 0, "head"), expectedOutput);
   });
 
   it("should give error message for illegal number of bytes", function() {
     let expectedOutput = "head: illegal byte count -- 0";
-    assert.deepEqual(errorForIllegalCount("c", 0, "head"), expectedOutput);
+    assert.deepEqual(illegalCountError("c", 0, "head"), expectedOutput);
   });
 });
 
-describe("errorForIllegalOption", function() {
+describe("illegalOptionError", function() {
   it("should return error message for head", function() {
     let expectedOutput =
       "head: illegal option -- k\nusage: head [-n lines | -c bytes] [file ...]";
-    assert.deepEqual(errorForIllegalOption("k", "head"), expectedOutput);
+    assert.deepEqual(illegalOptionError("k", "head"), expectedOutput);
   });
 
   it("should return error message for tail", function() {
     let expectedOutput =
       "tail: illegal option -- k\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
-    assert.deepEqual(errorForIllegalOption("k", "tail"), expectedOutput);
+    assert.deepEqual(illegalOptionError("k", "tail"), expectedOutput);
   });
 });
 
