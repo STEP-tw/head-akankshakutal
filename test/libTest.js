@@ -32,14 +32,14 @@ let fs = { readFileSync, existsSync };
 describe("getNLines", function() {
   let alphabets = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
 
-  it("should return first 10 lines when range is 0-10", function() {
-    let expectedOutput = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST";
-    assert.equal(getNLines(alphabets, [0, 10]), expectedOutput);
+  it("should return first 4 lines when range is 0-4", function() {
+    let expectedOutput = "AB\nCD\nEF\nGH";
+    assert.equal(getNLines(alphabets, [0, 4]), expectedOutput);
   });
 
-  it("should return last 10 lines when range contains only -10", function() {
-    let expectedOutput = "GH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
-    assert.equal(getNLines(alphabets, [-10]), expectedOutput);
+  it("should return last 4 lines when range contains only -4", function() {
+    let expectedOutput = "ST\nUV\nWX\nYZ";
+    assert.equal(getNLines(alphabets, [-4]), expectedOutput);
   });
 
   it("should return empty string when content is empty", function() {
@@ -57,14 +57,14 @@ describe("getNLines", function() {
 describe("getNBytes", function() {
   let contents = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
 
-  it("should return first 10 bytes/characters when range is 0-10", function() {
-    let expectedOutput = "AB\nCD\nEF\nG";
-    assert.equal(getNBytes(contents, [0, 10]), expectedOutput);
+  it("should return first 4 bytes/characters when range is 0-4", function() {
+    let expectedOutput = "AB\nC";
+    assert.equal(getNBytes(contents, [0, 4]), expectedOutput);
   });
 
-  it("should return last 10 bytes/characters when range contains -10", function() {
-    let expectedOutput = "T\nUV\nWX\nYZ";
-    assert.equal(getNBytes(contents, [-10]), expectedOutput);
+  it("should return last 4 bytes/characters when range contains -4", function() {
+    let expectedOutput = "X\nYZ";
+    assert.equal(getNBytes(contents, [-4]), expectedOutput);
   });
 
   it("should return empty string when content is empty", function() {
