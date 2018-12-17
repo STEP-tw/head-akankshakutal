@@ -27,21 +27,21 @@ const getRequiredContents = function(userInput, range, contents) {
   return getNBytes(contents, range);
 };
 
-const getContents = function(fs, context, file) {
+const getContents = function(fs, operation, file) {
   let { readFileSync, existsSync } = fs;
   if (!existsSync(file)) {
-    return context + ": " + file + ": No such file or directory";
+    return operation + ": " + file + ": No such file or directory";
   }
   let contents = readFileSync(file, "utf8");
   return contents;
 };
 
-const getFilteredContents = function(userInput, context, fs) {
+const getFilteredContents = function(userInput, operation, fs) {
   let range = [0, userInput.count];
-  if (context === "tail") {
+  if (operation === "tail") {
     range = [-userInput.count];
   }
-  let contents = userInput.fileNames.map(getContents.bind(null, fs, context));
+  let contents = userInput.fileNames.map(getContents.bind(null, fs, operation));
   let requiredContents = contents.map(
     getRequiredContents.bind(null, userInput, range)
   );
@@ -53,13 +53,9 @@ const getFilteredContents = function(userInput, context, fs) {
 };
 
 const headOrTail = function(userInput, operation, fs) {
-  let context = operation
-    .match(/....\.js/)
-    .join("")
-    .slice(0, 4);
-  let error = checkErrors(userInput, context);
+  let error = checkErrors(userInput, operation);
   if (error) return error;
-  return getFilteredContents(userInput, context, fs);
+  return getFilteredContents(userInput, operation, fs);
 };
 
 module.exports = {
