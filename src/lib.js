@@ -1,26 +1,23 @@
 const { checkErrors } = require("./errorLib.js");
 
-const getNLines = function(content, range) {
-  return content
-    .split("\n")
-    .slice(range[0], range[1])
-    .join("\n");
+const addHeading = function(fileName, content) {
+  return "==> " + fileName + " <==\n" + content;
+};
+
+const formatContents = function(fileNames, content, index) {
+  if (content.match(/: No such file or directory/)) return content;
+  return addHeading(fileNames[index], content);
 };
 
 const getNBytes = function(content, range) {
   return content.slice(range[0], range[1]);
 };
 
-const addHeading = function(fileName, content) {
-  return "==> " + fileName + " <==\n" + content;
-};
-
-const getContents = function(fileSystem, context, file) {
-  if (!fileSystem.existsSync(file)) {
-    return context + ": " + file + ": No such file or directory";
-  }
-  let contents = fileSystem.readFileSync(file, "utf8");
-  return contents;
+const getNLines = function(content, range) {
+  return content
+    .split("\n")
+    .slice(range[0], range[1])
+    .join("\n");
 };
 
 const getRequiredContents = function(userInput, range, contents) {
@@ -30,9 +27,12 @@ const getRequiredContents = function(userInput, range, contents) {
   return getNBytes(contents, range);
 };
 
-const formatContents = function(fileNames, content, index) {
-  if (content.match(/: No such file or directory/)) return content;
-  return addHeading(fileNames[index], content);
+const getContents = function(fileSystem, context, file) {
+  if (!fileSystem.existsSync(file)) {
+    return context + ": " + file + ": No such file or directory";
+  }
+  let contents = fileSystem.readFileSync(file, "utf8");
+  return contents;
 };
 
 const getFilteredContents = function(userInput, context, fileSystem) {

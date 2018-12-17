@@ -6,6 +6,10 @@ const errorForIllegalCount = function(option, count, type) {
   return types[type];
 };
 
+const isValidForTail = function(type, count) {
+  return count == 0 && type == "tail";
+};
+
 const errorForIllegalOption = function(option, type) {
   let head =
     "head: illegal option -- " +
@@ -21,10 +25,6 @@ const errorForIllegalOption = function(option, type) {
 
 const isOptionInvalid = function(option) {
   return option != "n" && option != "c";
-};
-
-const isValidForTail = function(type, count) {
-  return count == 0 && type == "tail";
 };
 
 const checkErrors = function(parsedInputs, type) {
