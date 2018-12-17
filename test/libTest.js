@@ -261,18 +261,19 @@ describe("getRequiredContents", function() {
 });
 
 describe("formatContents", function() {
+  let fileNames = ["File1", "File2"];
+  let bindHeading = formatContents(fileNames);
+
   it("should return contents wthout adding heading if it is error ", function() {
     let expectedOutput = "head: File1: No such file or directory";
-    let fileNames = ["File1", "File2"];
     let content = "head: File1: No such file or directory";
-    assert.deepEqual(formatContents(fileNames, content, 1), expectedOutput);
+    assert.deepEqual(bindHeading(content), expectedOutput);
   });
 
   it("should return contents with heading", function() {
-    let expectedOutput = "==> File2 <==\nHello";
-    let fileNames = ["File1", "File2"];
+    let expectedOutput = "==> File1 <==\nHello";
     let content = "Hello";
-    assert.deepEqual(formatContents(fileNames, content, 1), expectedOutput);
+    assert.deepEqual(bindHeading(content), expectedOutput);
   });
 });
 

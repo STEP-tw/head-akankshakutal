@@ -4,9 +4,12 @@ const addHeading = function(fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
 
-const formatContents = function(fileNames, content, index) {
-  if (content.match(/: No such file or directory/)) return content;
-  return addHeading(fileNames[index], content);
+const formatContents = function(fileNames) {
+  let index = 0;
+  return function(content) {
+    if (content.match(/: No such file or directory/)) return content;
+    return addHeading(fileNames[index++], content);
+  };
 };
 
 const getNBytes = function(content, range) {
@@ -47,9 +50,8 @@ const getFilteredContents = function(userInput, operation, fs) {
     getRequiredContents.bind(null, userInput, range)
   );
   if (requiredContents.length == 1) return requiredContents.join("\n\n");
-  let formattedContents = requiredContents.map(
-    formatContents.bind(null, fileNames)
-  );
+  let bindHeading = formatContents(fileNames);
+  let formattedContents = requiredContents.map(bindHeading);
   return formattedContents.join("\n\n");
 };
 
