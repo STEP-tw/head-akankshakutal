@@ -2,7 +2,7 @@ const isOnlyType = function(value) {
   return value.match(/^-[a-z]/g);
 };
 
-const isValidOption = function(value) {
+const hasOptionAndCount = function(value) {
   return value.match(/^-[a-z][0-9]/g);
 };
 
@@ -18,7 +18,7 @@ const parse = function(args) {
   if (parseInt(args[0])) {
     parsedInput = createObject("n", args[0].slice(1), args.slice(1));
   }
-  if (isValidOption(args[0])) {
+  if (hasOptionAndCount(args[0])) {
     parsedInput = createObject(args[0][1], args[0].slice(2), args.slice(1));
   }
   return parsedInput;
@@ -26,7 +26,7 @@ const parse = function(args) {
 
 module.exports = {
   isOnlyType,
-  isValidOption,
+  hasOptionAndCount,
   createObject,
   parse
 };

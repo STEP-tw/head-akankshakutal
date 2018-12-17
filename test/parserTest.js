@@ -2,7 +2,7 @@ const {
   parse,
   createObject,
   isOnlyType,
-  isValidOption
+  hasOptionAndCount
 } = require("../src/parser.js");
 
 const assert = require("assert");
@@ -17,17 +17,17 @@ describe("isOnlyType", function() {
   });
 });
 
-describe("isValidOption", function() {
+describe("hasOptionAndCount", function() {
   it("should return null if number is not given ", function() {
-    assert.deepEqual(isValidOption("-n"), null);
+    assert.deepEqual(hasOptionAndCount("-n"), null);
   });
 
   it("should return null if arguments are only numbers", function() {
-    assert.deepEqual(isValidOption("-4"), null);
+    assert.deepEqual(hasOptionAndCount("-4"), null);
   });
 
   it("should return array if arguments are both type and values", function() {
-    assert.deepEqual(isValidOption("-n4"), ["-n4"]);
+    assert.deepEqual(hasOptionAndCount("-n4"), ["-n4"]);
   });
 });
 
