@@ -136,4 +136,46 @@ describe("parse", function() {
       assert.deepEqual(parse(input), expectedOutput);
     });
   });
+
+  describe("for multipleFiles", function() {
+    it("should return object with contains array of multiple files", function() {
+      let input = ["-n4", "File1", "File2"];
+      let expectedOutput = {
+        option: "n",
+        count: 4,
+        fileNames: ["File1", "File2"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
+
+    it("should give default option -n if option is not specified", function() {
+      input = ["-5", "file1", "file2", "file3"];
+      expectedOutput = {
+        option: "n",
+        count: 5,
+        fileNames: ["file1", "file2", "file3"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
+
+    it("should return object when count is on second index ", function() {
+      let input = ["-n", "4", "File2", "File1"];
+      let expectedOutput = {
+        option: "n",
+        count: 4,
+        fileNames: ["File2", "File1"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
+
+    it("should return object which contains string in count", function() {
+      let input = ["-n", "File1", "File2"];
+      let expectedOutput = {
+        option: "n",
+        count: "File1",
+        fileNames: ["File2"]
+      };
+      assert.deepEqual(parse(input), expectedOutput);
+    });
+  });
 });
