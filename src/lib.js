@@ -38,7 +38,7 @@ const getContents = function(fs, operation, file) {
 
 const getFilteredContents = function(userInput, operation, fs) {
   let { count, fileNames } = userInput;
-  let range = [0, userInput.count];
+  let range = [0, count];
   if (operation === "tail") {
     range = [-count];
   }
