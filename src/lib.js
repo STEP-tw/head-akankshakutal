@@ -37,19 +37,18 @@ const getContents = function(fs, operation, file) {
 };
 
 const getFilteredContents = function(userInput, operation, fs) {
+  let { count, fileNames } = userInput;
   let range = [0, userInput.count];
   if (operation === "tail") {
-    range = [-userInput.count];
+    range = [-count];
   }
-  let fileContents = userInput.fileNames.map(
-    getContents.bind(null, fs, operation)
-  );
+  let fileContents = fileNames.map(getContents.bind(null, fs, operation));
   let requiredContents = fileContents.map(
     getRequiredContents.bind(null, userInput, range)
   );
   if (requiredContents.length == 1) return requiredContents.join("\n\n");
   let formattedContents = requiredContents.map(
-    formatContents.bind(null, userInput.fileNames)
+    formatContents.bind(null, fileNames)
   );
   return formattedContents.join("\n\n");
 };
