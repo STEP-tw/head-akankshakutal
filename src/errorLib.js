@@ -23,13 +23,13 @@ const illegalOptionError = function(option, operation) {
   return operations[operation];
 };
 
-const isOptionInvalid = function(option) {
+const isInvalidOption = function(option) {
   return option != "n" && option != "c";
 };
 
 const checkErrors = function(parsedInputs, operation) {
   let { option, count } = parsedInputs;
-  if (isOptionInvalid(option)) {
+  if (isInvalidOption(option)) {
     return illegalOptionError(option, operation);
   }
   if (isValidForTail(operation, count)) {
@@ -42,7 +42,7 @@ const checkErrors = function(parsedInputs, operation) {
 module.exports = {
   illegalCountError,
   illegalOptionError,
-  isOptionInvalid,
+  isInvalidOption,
   isValidForTail,
   checkErrors
 };

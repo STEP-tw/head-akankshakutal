@@ -2,7 +2,7 @@ const assert = require("assert");
 const {
   illegalCountError,
   illegalOptionError,
-  isOptionInvalid,
+  isInvalidOption,
   isValidForTail,
   checkErrors
 } = require("../src/errorLib.js");
@@ -33,16 +33,16 @@ describe("illegalOptionError", function() {
   });
 });
 
-describe("isOptionInvalid", function() {
+describe("isInvalidOption", function() {
   it("should return false when option is n", function() {
-    assert.equal(isOptionInvalid("n"), false);
+    assert.equal(isInvalidOption("n"), false);
   });
   it("should return false when option is c", function() {
-    assert.equal(isOptionInvalid("c"), false);
+    assert.equal(isInvalidOption("c"), false);
   });
   it("should return true when option is other than c,n", function() {
-    assert.equal(isOptionInvalid("p"), true);
-    assert.equal(isOptionInvalid("v"), true);
+    assert.equal(isInvalidOption("p"), true);
+    assert.equal(isInvalidOption("v"), true);
   });
 });
 
