@@ -81,7 +81,7 @@ describe("checkErrors", function() {
     });
   });
   describe("for tail", function() {
-    it("shouldn't return any error and usage message when option is invalid ", () => {
+    it("should return any error and usage message when option is invalid ", () => {
       let userInput = { option: "p", count: 7 };
       let expectedOutput =
         "tail: illegal option -- p\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
