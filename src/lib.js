@@ -41,8 +41,10 @@ const getFilteredContents = function(userInput, operation, fs) {
   if (operation === "tail") {
     range = [-userInput.count];
   }
-  let contents = userInput.fileNames.map(getContents.bind(null, fs, operation));
-  let requiredContents = contents.map(
+  let fileContents = userInput.fileNames.map(
+    getContents.bind(null, fs, operation)
+  );
+  let requiredContents = fileContents.map(
     getRequiredContents.bind(null, userInput, range)
   );
   if (requiredContents.length == 1) return requiredContents.join("\n\n");
