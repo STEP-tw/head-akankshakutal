@@ -10,19 +10,16 @@ const {
   getNBytes
 } = require("../src/lib.js");
 
-const mockUtf8Reader = function(expectedFiles, expectedEncoding) {
-  return function(actualFilePath, actualEncoding) {
-    if (expectedEncoding === actualEncoding) {
-      return expectedFiles[actualFilePath];
-    }
-  };
+let expectedFilePaths = {};
+expectedFilePaths = {
+  lines: "A\nB\nC\nD\nE\nF",
+  digits: "1\n2\n3\n4\n5\n6\n7\n8\n9\n0",
+  Numbers: "one\ntwo\nthree\nfour\nfive\nsix\nseven\neight\nnine\nten"
 };
 
-const mockExistsSync = function(fileNames) {
-  return function(fileName) {
-    return fileNames.includes(fileName);
-  };
-};
+let { mockReader } = require("./util.js");
+let fs = {};
+fs = mockReader(expectedFilePaths);
 
 describe("getNLines", function() {
   let alphabets = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
@@ -75,14 +72,6 @@ describe("getNBytes", function() {
 });
 
 describe("getContents", function() {
-  let expectedFileNames = {};
-  expectedFileNames["lines"] = "A\nB\nC\nD\nE\nF";
-  expectedFileNames["digits"] = "1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
-  const fs = {
-    readFileSync: mockUtf8Reader(expectedFileNames, "utf8"),
-    existsSync: mockExistsSync(["EmptyFile", "lines", "digits"])
-  };
-
   it("should return error message file does not exists when operation is head ", function() {
     let expectedOutput = "head: file1: No such file or directory";
     assert.equal(getContents(fs, "head", "file1"), expectedOutput);
@@ -99,14 +88,6 @@ describe("getContents", function() {
 });
 
 describe("getFilteredContents", function() {
-  let expectedFileNames = {};
-  expectedFileNames["lines"] = "A\nB\nC\nD\nE\nF";
-  expectedFileNames["digits"] = "1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
-  const fs = {
-    readFileSync: mockUtf8Reader(expectedFileNames, "utf8"),
-    existsSync: mockExistsSync(["EmptyFile", "lines", "digits"])
-  };
-
   describe("for head", function() {
     it("should return first 5 lines of single file", function() {
       let userInput = { option: "n", count: 5, fileNames: ["lines"] };
@@ -169,14 +150,6 @@ describe("getFilteredContents", function() {
 });
 
 describe("headOrTail", function() {
-  let expectedFileNames = {};
-  expectedFileNames["lines"] = "A\nB\nC\nD\nE\nF";
-  expectedFileNames["digits"] = "1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
-  const fs = {
-    readFileSync: mockUtf8Reader(expectedFileNames, "utf8"),
-    existsSync: mockExistsSync(["EmptyFile", "lines", "digits"])
-  };
-
   describe("for head", function() {
     it("should return error message when input contains count as 0 ", function() {
       let userInput = { option: "n", count: 0, fileNames: ["digits"] };
