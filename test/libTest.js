@@ -94,10 +94,8 @@ describe("getContents", function() {
     let expectedOutput =
       "There are 5 types of lines:\nHorizontal line.\nVertical line.\nSkew Lines.\nParallel Lines.\nPerpendicular Lines.";
     assert.equal(getContents(fs, "head", "lines"), expectedOutput);
-  });
 
-  it("should return whole contents of file because file exists", function() {
-    let expectedOutput =
+    expectedOutput =
       "One\nTwo\nThree\nFour\nFive\nSix\nSeven\nEight\nNine\nTen";
     assert.equal(getContents(fs, "tail", "numbers"), expectedOutput);
   });
