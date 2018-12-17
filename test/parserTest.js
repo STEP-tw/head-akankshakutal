@@ -52,6 +52,16 @@ describe("createObject", function() {
 });
 
 describe("parse", function() {
+  it("should give default option -n if option is not specified", function() {
+    input = ["-5", "file1"];
+    expectedOutput = {
+      option: "n",
+      count: 5,
+      fileNames: ["file1"]
+    };
+    assert.deepEqual(parse(input), expectedOutput);
+  });
+
   describe("for -n option", function() {
     it("should return object when count is with option", function() {
       let input = ["-n4", "File1"];
@@ -59,16 +69,6 @@ describe("parse", function() {
         option: "n",
         count: 4,
         fileNames: ["File1"]
-      };
-      assert.deepEqual(parse(input), expectedOutput);
-    });
-
-    it("should give default option -n if option is not specified", function() {
-      input = ["-5", "file1"];
-      expectedOutput = {
-        option: "n",
-        count: 5,
-        fileNames: ["file1"]
       };
       assert.deepEqual(parse(input), expectedOutput);
     });
@@ -93,6 +93,7 @@ describe("parse", function() {
       assert.deepEqual(parse(input), expectedOutput);
     });
   });
+
   describe("for -c option", function() {
     it("should return object which contains c as a option ", function() {
       let input = ["-c20", "File1"];
