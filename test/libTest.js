@@ -204,7 +204,7 @@ describe("headOrTail", function() {
       assert.deepEqual(headOrTail(userInput, "tail", fs), expectedOutput);
     });
 
-    it("should return last two characters when operation is tail and option is c ", function() {
+    it("should return last specified number of characters when operation is tail and option is c ", function() {
       let userInput = { option: "c", count: 2, fileNames: ["lines"] };
       let expectedOutput = "s.";
       assert.deepEqual(headOrTail(userInput, "tail", fs), expectedOutput);
@@ -261,7 +261,7 @@ describe("getRequiredContents", function() {
 });
 
 describe("formatContents", function() {
-  it("should return contents as it is if it is an error message", function() {
+  it("should return contents wthout adding heading if it is error ", function() {
     let expectedOutput = "head: File1: No such file or directory";
     let fileNames = ["File1", "File2"];
     let content = "head: File1: No such file or directory";
