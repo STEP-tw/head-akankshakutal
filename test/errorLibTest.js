@@ -47,11 +47,11 @@ describe("isOptionInvalid", function() {
 });
 
 describe("isValidForTail", function() {
-  it("should return true if type is tail and count is 0", function() {
+  it("should return true if operation is tail and count is 0", function() {
     assert.equal(isValidForTail("tail", 0), true);
   });
 
-  it("should return false if type is other tahn tail ", function() {
+  it("should return false if operation is other tahn tail ", function() {
     assert.equal(isValidForTail("head", 0), false);
   });
   it("should return false if count is other than 0", function() {
@@ -68,7 +68,7 @@ describe("checkErrors", function() {
       assert.equal(checkErrors(userInput, "head"), expectedOutput);
     });
 
-    it("should return error mssage when count is 0 and type is head", function() {
+    it("should return error mssage when count is 0 and operation is head", function() {
       let userInput = { option: "c", count: 0 };
       let expectedOutput = "head: illegal byte count -- 0";
       assert.deepEqual(checkErrors(userInput, "head"), expectedOutput);

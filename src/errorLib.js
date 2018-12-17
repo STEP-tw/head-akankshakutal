@@ -1,16 +1,16 @@
-const illegalCountError = function(option, count, type) {
-  let optionType = { n: "line", c: "byte" };
-  let head = "head: illegal " + optionType[option] + " count -- " + count;
+const illegalCountError = function(option, count, operation) {
+  let optionoperation = { n: "line", c: "byte" };
+  let head = "head: illegal " + optionoperation[option] + " count -- " + count;
   let tail = "tail: illegal offset -- " + count;
-  let types = { head, tail };
-  return types[type];
+  let operations = { head, tail };
+  return operations[operation];
 };
 
-const isValidForTail = function(type, count) {
-  return count == 0 && type == "tail";
+const isValidForTail = function(operation, count) {
+  return count == 0 && operation == "tail";
 };
 
-const illegalOptionError = function(option, type) {
+const illegalOptionError = function(option, operation) {
   let head =
     "head: illegal option -- " +
     option +
@@ -19,24 +19,24 @@ const illegalOptionError = function(option, type) {
     "tail: illegal option -- " +
     option +
     "\nusage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]";
-  types = { head, tail };
-  return types[type];
+  operations = { head, tail };
+  return operations[operation];
 };
 
 const isOptionInvalid = function(option) {
   return option != "n" && option != "c";
 };
 
-const checkErrors = function(parsedInputs, type) {
+const checkErrors = function(parsedInputs, operation) {
   let { option, count } = parsedInputs;
   if (isOptionInvalid(option)) {
-    return illegalOptionError(option, type);
+    return illegalOptionError(option, operation);
   }
-  if (isValidForTail(type, count)) {
+  if (isValidForTail(operation, count)) {
     return " ";
   }
   if (!(count > 0)) {
-    return illegalCountError(option, count, type);
+    return illegalCountError(option, count, operation);
   }
 };
 module.exports = {
