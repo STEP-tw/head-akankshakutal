@@ -147,6 +147,17 @@ describe("getFilteredContents", function() {
       );
     });
   });
+  describe("missing file", function() {
+    it("should return error message file does not exists when operation is head ", function() {
+      let expectedOutput = "head: file1: No such file or directory";
+      assert.equal(getContents(fs, "head", "file1"), expectedOutput);
+    });
+
+    it("should return error message file does not exists when operation is tail ", function() {
+      let expectedOutput = "tail: file1: No such file or directory";
+      assert.equal(getContents(fs, "tail", "file1"), expectedOutput);
+    });
+  });
 });
 
 describe("headOrTail", function() {
