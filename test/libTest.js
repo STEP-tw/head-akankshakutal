@@ -82,8 +82,14 @@ describe("getContents", function() {
     assert.equal(getContents(fs, "tail", "file1"), expectedOutput);
   });
 
-  it("should return whole contents of file because file exists", function() {
-    assert.equal(getContents(fs, "head", "lines"), "A\nB\nC\nD\nE\nF");
+  it("should return whole contents of file because file exists and operation is head", function() {
+    let expectedOutput = "A\nB\nC\nD\nE\nF";
+    assert.equal(getContents(fs, "head", "lines"), expectedOutput);
+  });
+
+  it("should return whole contents of file because file exists and operation is tail", function() {
+    let expectedOutput = "A\nB\nC\nD\nE\nF";
+    assert.equal(getContents(fs, "tail", "lines"), expectedOutput);
   });
 });
 
