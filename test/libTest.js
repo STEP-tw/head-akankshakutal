@@ -1,4 +1,5 @@
 const assert = require("assert");
+let { mockReader } = require("./util.js");
 const {
   getNLines,
   addHeading,
@@ -17,13 +18,10 @@ expectedFilePaths = {
   Numbers: "one\ntwo\nthree\nfour\nfive\nsix\nseven\neight\nnine\nten"
 };
 
-let { mockReader } = require("./util.js");
-let fs = {};
-fs = mockReader(expectedFilePaths);
+let fs = mockReader(expectedFilePaths);
 
 describe("getNLines", function() {
   let alphabets = "AB\nCD\nEF\nGH\nIJ\nKL\nMN\nOP\nQR\nST\nUV\nWX\nYZ";
-
   it("should return first 4 lines when range is 0-4", function() {
     let expectedOutput = "AB\nCD\nEF\nGH";
     assert.equal(getNLines(alphabets, [0, 4]), expectedOutput);
@@ -72,12 +70,12 @@ describe("getNBytes", function() {
 });
 
 describe("getContents", function() {
-  it("should return error message file does not exists when operation is head ", function() {
+  it("should return error message when file does not exists and operation is head ", function() {
     let expectedOutput = "head: file1: No such file or directory";
     assert.equal(getContents(fs, "head", "file1"), expectedOutput);
   });
 
-  it("should return error message file does not exists when operation is tail ", function() {
+  it("should return error message when file does not exists and operation is tail ", function() {
     let expectedOutput = "tail: file1: No such file or directory";
     assert.equal(getContents(fs, "tail", "file1"), expectedOutput);
   });
@@ -265,9 +263,9 @@ describe("formatContents", function() {
   let fileNames = ["File1", "File2"];
   let bindHeading = formatContents(fileNames);
 
-  it("should return contents wthout adding heading if it is error ", function() {
-    let expectedOutput = "head: File1: No such file or directory";
+  it("should return contents without adding heading if it is error ", function() {
     let content = "head: File1: No such file or directory";
+    let expectedOutput = "head: File1: No such file or directory";
     assert.deepEqual(bindHeading(content), expectedOutput);
   });
 
