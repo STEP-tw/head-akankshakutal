@@ -11,15 +11,16 @@ const createObject = function(option, count, fileNames) {
 };
 
 const parse = function(args) {
+  let firstArg = args[0];
   let parsedInput = { option: "n", count: 10, fileNames: args.slice(0) };
-  if (isOnlyType(args[0])) {
-    parsedInput = createObject(args[0][1], args[1], args.slice(2));
+  if (isOnlyType(firstArg)) {
+    parsedInput = createObject(firstArg[1], args[1], args.slice(2));
   }
-  if (parseInt(args[0])) {
-    parsedInput = createObject("n", args[0].slice(1), args.slice(1));
+  if (parseInt(firstArg)) {
+    parsedInput = createObject("n", firstArg.slice(1), args.slice(1));
   }
-  if (hasOptionAndCount(args[0])) {
-    parsedInput = createObject(args[0][1], args[0].slice(2), args.slice(1));
+  if (hasOptionAndCount(firstArg)) {
+    parsedInput = createObject(firstArg[1], firstArg.slice(2), args.slice(1));
   }
   return parsedInput;
 };
