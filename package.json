@@ -1,0 +1,28 @@
+{
+  "name": "head-akankshakutal",
+  "version": "1.0.0",
+  "description": "Run mocha tests",
+  "main": "head.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  },
+  "scripts": {
+    "start": "node head.js -n5 ./data/tenLines.txt",
+    "test": "mocha",
+    "stop": "node tail.js -n5 ./data/tenLines.txt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/STEP-tw/head-akankshakutal.git"
+  },
+  "author": "Akanksha",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/STEP-tw/head-akankshakutal/issues"
+  },
+  "homepage": "https://github.com/STEP-tw/head-akankshakutal#readme"
+}
