@@ -246,6 +246,7 @@ describe("formatContents", function() {
   });
 
   it("should return contents with heading", function() {
+    let bindHeading = formatContents(fileNames);
     let expectedOutput = "==> File1 <==\nHello";
     let content = "Hello";
     assert.deepEqual(bindHeading(content), expectedOutput);

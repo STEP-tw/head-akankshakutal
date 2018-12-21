@@ -5,7 +5,10 @@ const addHeading = function(fileName, content) {
 const formatContents = function(fileNames) {
   let index = 0;
   return function(content) {
-    if (content.match(/: No such file or directory/)) return content;
+    if (content.match(/: No such file or directory/)) {
+      index++;
+      return content;
+    }
     return addHeading(fileNames[index++], content);
   };
 };
