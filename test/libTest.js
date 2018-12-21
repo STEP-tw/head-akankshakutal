@@ -166,18 +166,6 @@ describe("getFilteredContents", function() {
 
 describe("headOrTail", function() {
   describe("for head", function() {
-    it("should return error message when input contains count as 0 ", function() {
-      let userInput = { option: "n", count: 0, fileNames: ["digits"] };
-      let expectedOutput = "head: illegal line count -- 0";
-      assert.deepEqual(headOrTail(userInput, "head", fs), expectedOutput);
-    });
-
-    it("should return error message when count is invalid ", function() {
-      let userInput = { option: "n", count: "X", fileNames: ["lines"] };
-      let expectedOutput = "head: illegal line count -- X";
-      assert.deepEqual(headOrTail(userInput, "head", fs), expectedOutput);
-    });
-
     it("should return first five lines of file when input contains valid file and count", function() {
       let userInput = { option: "n", count: 5, fileNames: ["lines"] };
       let expectedOutput = "A\nB\nC\nD\nE";
@@ -191,18 +179,6 @@ describe("headOrTail", function() {
     });
   });
   describe("for tail", function() {
-    it("should return emptyString when input contains count as 0 and operation is tail", function() {
-      let userInput = { option: "n", count: 0, fileNames: ["digits"] };
-      let expectedOutput = " ";
-      assert.deepEqual(headOrTail(userInput, "tail", fs), expectedOutput);
-    });
-
-    it("should return error message when count is invalid ", function() {
-      let userInput = { option: "n", count: "X", fileNames: ["numbers"] };
-      let expectedOutput = "tail: illegal offset -- X";
-      assert.deepEqual(headOrTail(userInput, "tail", fs), expectedOutput);
-    });
-
     it("should return last specified number of characters when operation is tail and option is c ", function() {
       let userInput = { option: "c", count: 2, fileNames: ["lines"] };
       let expectedOutput = "\nF";

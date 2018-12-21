@@ -1,5 +1,3 @@
-const { checkErrors } = require("./errorLib.js");
-
 const addHeading = function(fileName, content) {
   return "==> " + fileName + " <==\n" + content;
 };
@@ -56,8 +54,6 @@ const getFilteredContents = function(userInput, operation, fs) {
 };
 
 const headOrTail = function(userInput, operation, fs) {
-  let error = checkErrors(userInput, operation);
-  if (error) return error;
   return getFilteredContents(userInput, operation, fs);
 };
 
