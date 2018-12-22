@@ -7,7 +7,8 @@ const {
   getContents,
   formatContents,
   getFilteredContents,
-  headOrTail,
+  head,
+  tail,
   getNBytes
 } = require("../src/lib.js");
 
@@ -164,37 +165,63 @@ describe("getFilteredContents", function() {
   });
 });
 
-describe("headOrTail", function() {
-  describe("for head", function() {
-    it("should return first five lines of file when input contains valid file and count", function() {
-      let userInput = { option: "n", count: 5, fileNames: ["lines"] };
-      let expectedOutput = "A\nB\nC\nD\nE";
-      assert.deepEqual(headOrTail(userInput, "head", fs), expectedOutput);
-    });
-
-    it("should return first 1o lines when all inputs are valid ", function() {
-      let userInput = { option: "n", count: 10, fileNames: ["digits"] };
-      let expectedOutput = "1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
-      assert.deepEqual(headOrTail(userInput, "head", fs), expectedOutput);
-    });
+describe("head", function() {
+  it("should return first five lines of file when input contains valid file and count", function() {
+    let userInput = { option: "n", count: 5, fileNames: ["lines"] };
+    let expectedOutput = "A\nB\nC\nD\nE";
+    assert.deepEqual(head(userInput, fs), expectedOutput);
   });
-  describe("for tail", function() {
-    it("should return last specified number of characters when operation is tail and option is c ", function() {
-      let userInput = { option: "c", count: 2, fileNames: ["lines"] };
-      let expectedOutput = "\nF";
-      assert.deepEqual(headOrTail(userInput, "tail", fs), expectedOutput);
-    });
 
-    it("should return contents with heading when fileNames are more than 1", function() {
-      let userInput = {
-        option: "n",
-        count: 10,
-        fileNames: ["lines", "digits"]
-      };
-      let expectedOutput =
-        "==> lines <==\nA\nB\nC\nD\nE\nF\n\n==> digits <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
-      assert.deepEqual(headOrTail(userInput, "tail", fs), expectedOutput);
-    });
+  it("should return first 1o lines when all inputs are valid ", function() {
+    let userInput = { option: "n", count: 10, fileNames: ["digits"] };
+    let expectedOutput = "1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
+    assert.deepEqual(head(userInput, fs), expectedOutput);
+  });
+  it("should return first specified number of characters when operation is tail and option is c ", function() {
+    let userInput = { option: "c", count: 2, fileNames: ["lines"] };
+    let expectedOutput = "A\n";
+    assert.deepEqual(head(userInput, fs), expectedOutput);
+  });
+
+  it("should return contents with heading when fileNames are more than 1", function() {
+    let userInput = {
+      option: "n",
+      count: 10,
+      fileNames: ["lines", "digits"]
+    };
+    let expectedOutput =
+      "==> lines <==\nA\nB\nC\nD\nE\nF\n\n==> digits <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
+    assert.deepEqual(head(userInput, fs), expectedOutput);
+  });
+});
+
+describe("tail", function() {
+  it("should return last five lines of file when input contains valid file and count", function() {
+    let userInput = { option: "n", count: 5, fileNames: ["lines"] };
+    let expectedOutput = "B\nC\nD\nE\nF";
+    assert.deepEqual(tail(userInput, fs), expectedOutput);
+  });
+
+  it("should return last 1o lines when all inputs are valid ", function() {
+    let userInput = { option: "n", count: 10, fileNames: ["digits"] };
+    let expectedOutput = "1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
+    assert.deepEqual(tail(userInput, fs), expectedOutput);
+  });
+  it("should return last specified number of characters when operation is tail and option is c ", function() {
+    let userInput = { option: "c", count: 2, fileNames: ["lines"] };
+    let expectedOutput = "\nF";
+    assert.deepEqual(tail(userInput, fs), expectedOutput);
+  });
+
+  it("should return contents with heading when fileNames are more than 1", function() {
+    let userInput = {
+      option: "n",
+      count: 10,
+      fileNames: ["lines", "digits"]
+    };
+    let expectedOutput =
+      "==> lines <==\nA\nB\nC\nD\nE\nF\n\n==> digits <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n0";
+    assert.deepEqual(tail(userInput, fs), expectedOutput);
   });
 });
 

@@ -56,8 +56,12 @@ const getFilteredContents = function(userInput, operation, fs) {
   return formattedContents.join("\n\n");
 };
 
-const headOrTail = function(userInput, operation, fs) {
-  return getFilteredContents(userInput, operation, fs);
+const head = function(userInput, fs) {
+  return getFilteredContents(userInput, "head", fs);
+};
+
+const tail = function(userInput, fs) {
+  return getFilteredContents(userInput, "tail", fs);
 };
 
 module.exports = {
@@ -68,5 +72,6 @@ module.exports = {
   getRequiredContents,
   formatContents,
   getNBytes,
-  headOrTail
+  head,
+  tail
 };
